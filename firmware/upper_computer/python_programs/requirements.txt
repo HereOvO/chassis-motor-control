@@ -1,0 +1,3 @@
+# 串口通信程序安装依赖
+
+pip install pyzmq pyserial
