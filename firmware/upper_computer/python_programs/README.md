@@ -1,87 +1,118 @@
-# 轮式腿机器人上位机通信程序
+# Chassis USART1 Bring-up Tools
 
-本项目包含三个Python程序，用于与STM32单片机通过UART5进行通信。
+This directory contains PC-side helper scripts for the migrated STM32F407 chassis firmware.
+The current bring-up path uses USART1 at 115200 baud. In the present test bench the USB-UART is `COM16`.
 
-## 架构说明
+## Main Script
 
-由于多个程序不能同时直接访问同一个物理串口，我们采用了中间服务器架构：
+Use `chassis_bringup_test.py` for direct firmware tests:
 
-1. **serial_server.py** - 串口中间服务器（核心）
-   - 负责与物理串口(COM11)通信
-   - 使用ZeroMQ发布/订阅模式分发数据
-   - 一个程序独占串口资源，避免冲突
-
-2. **receiver_client.py** - 数据接收客户端
-   - 订阅来自单片机的数据
-   - 解析并显示各种消息类型
-
-3. **sender_client.py** - 命令发送客户端  
-   - 向单片机发送控制命令
-   - 提供交互式界面
-
-## 安装依赖
-
-```bash
-pip install pyzmq pyserial
+```powershell
+python chassis_bringup_test.py --port COM16 --mode stop
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern forward --vx 0.8 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern left --vy 0.5 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern right --vy 0.5 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode pwmtest --motor 2 --direction -1 --duty 1.0 --duration 10000 --no-stop
 ```
 
-## 使用方法
+Always send stop before changing long-running motion commands:
 
-### 1. 启动串口服务器（必须首先运行）
-
-```bash
-python serial_server.py
+```powershell
+python chassis_bringup_test.py --port COM16 --mode stop
 ```
 
-### 2. 启动接收客户端（在另一个终端）
+## Firmware Commands Used
 
-```bash
-python receiver_client.py
+The script sends ASCII commands terminated by CRLF:
+
+```text
+ASCII
+ZERO
+PROFILE,1
+MODE,1
+ENABLE,1
+VEL,<vx_mps>,<vy_mps>,<wz_radps>
+PWMTEST,<motor_id>,<direction>,<duty>
+RAWPWM,<motor_id>,<direction>,<duty>
 ```
 
-### 3. 启动发送客户端（在另一个终端）
+Velocity convention in the current firmware:
 
-```bash
-python sender_client.py
+```text
+vx > 0: forward
+vx < 0: backward
+vy > 0: left strafe
+vy < 0: right strafe
+wz > 0: left turn
+wz < 0: right turn
 ```
 
-## 消息格式
+## Calibrated Motor Mapping
 
-### 接收的消息类型：
-- **POSE**: 姿态数据 - `POSE,<servo0>,<servo1>,...,<servo15>,<timestamp>,<accel_x>,<accel_y>,<accel_z>,<gyro_x>,<gyro_y>,<gyro_z>,<temperature>,<dir1>,<dir2>,<dir3>,<dir4>,<rpm1>,<rpm2>,<rpm3>,<rpm4>`
-- **HB**: 心跳包 - `HB`
-- **ACK**: 确认消息 - `ACK:<msg_id>`
-- **ERR**: 错误消息 - `ERR:<error_code>:<error_msg>`
+The firmware and scripts use this motor index order:
 
-### 发送的命令类型：
-- **SERVO**: 舵机控制 - `SERVO,<servo_id>,<angle>,<duration>`
-- **MOTOR**: 电机控制 - `MOTOR,<motor_id>,<signed_speed_rpm>`
-  - `signed_speed_rpm`: 正值=正转, 负值=反转, 0=停止/刹车
-
-## 配置说明
-
-- 默认串口：COM11（可在serial_server.py中修改）
-- 发布端口：TCP 5555（接收数据）
-- 订阅端口：TCP 5556（发送数据）
-
-## 注意事项
-
-1. 必须先启动serial_server.py，再启动其他客户端
-2. 确保指定的串口号在您的系统中存在且未被其他程序占用
-3. 如果需要使用COM9或COM12，请修改serial_server.py中的端口号
-4. 发送客户端提供交互式菜单，方便发送各种控制命令
-5. 接收客户端会自动解析和格式化接收到的数据
-
-## 示例命令
-
-### 舵机控制
-```
-SERVO,0,90,1000    # 控制0号舵机转到90度，用时1000ms
+```text
+0 = left-front wheel
+1 = left-rear wheel
+2 = right-rear wheel
+3 = right-front wheel
 ```
 
-### 电机控制
+Validated wheel directions with the current firmware and wiring:
+
+```text
+forward:    0/1/2/3 = forward / forward / forward / forward
+backward:   0/1/2/3 = backward / backward / backward / backward
+turn-left:  0/1/2/3 = backward / backward / forward / forward
+turn-right: 0/1/2/3 = forward / forward / backward / backward
+left:       0/1/2/3 = backward / forward / backward / forward
+right:      0/1/2/3 = forward / backward / forward / backward
 ```
-MOTOR,0,50.5     # 控制0号电机正转，转速50.5 RPM
-MOTOR,0,-30.0    # 控制0号电机反转，转速30.0 RPM
-MOTOR,0,0.0      # 控制0号电机停止
+
+PWM and encoder wiring currently recorded in firmware:
+
+```text
+M0 left-front:  forward PE9/TIM1_CH1,  reverse PE5/TIM9_CH1,   encoder TIM2, direction_invert=1
+M1 left-rear:   forward PE11/TIM1_CH2, reverse PE6/TIM9_CH2,   encoder TIM3, direction_invert=1
+M2 right-rear:  forward PE13/TIM1_CH3, reverse PB14/TIM12_CH1, encoder TIM4, direction_invert=-1
+M3 right-front: forward PE14/TIM1_CH4, reverse PB15/TIM12_CH2, encoder TIM5, direction_invert=-1
 ```
+
+## Useful Test Commands
+
+Dry-run without opening the serial port:
+
+```powershell
+python chassis_bringup_test.py --port COM16 --pattern left --vy 0.5 --dry-run
+python chassis_bringup_test.py --port COM16 --pattern right --vy 0.5 --dry-run
+```
+
+Long-running motion tests:
+
+```powershell
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern forward --vx 0.8 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern backward --vx 0.8 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern left --vy 0.5 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern right --vy 0.5 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern turn-left --wz 1.5 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode velocity --pattern turn-right --wz 1.5 --duration 10000 --no-stop
+```
+
+Raw PWM motor tests that bypass PID and encoder feedback:
+
+```powershell
+python chassis_bringup_test.py --port COM16 --mode pwmtest --motor 0 --direction 1 --duty 1.0 --duration 10000 --no-stop
+python chassis_bringup_test.py --port COM16 --mode pwmtest --motor 0 --direction -1 --duty 1.0 --duration 10000 --no-stop
+```
+
+Listen to firmware feedback:
+
+```powershell
+python chassis_bringup_test.py --port COM16 --mode listen --duration 5
+```
+
+## Notes
+
+The older `serial_server.py`, `sender_client.py`, and `receiver_client.py` files are legacy ZeroMQ tools from the original project. They are not required for the current USART1 bring-up path.
+
+If no PWM waveform is visible on an output pin, first check whether the command requested 100% duty. A 100% compare value can appear as a static high level instead of a square wave.

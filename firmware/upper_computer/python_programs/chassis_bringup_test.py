@@ -16,6 +16,15 @@ Motor index mapping:
     1 = left-rear wheel
     2 = right-rear wheel
     3 = right-front wheel
+
+Validated wheel directions with current firmware and wiring:
+
+    forward:   0/1/2/3 = forward/forward/forward/forward
+    backward:  0/1/2/3 = backward/backward/backward/backward
+    turn-left: 0/1/2/3 = backward/backward/forward/forward
+    turn-right:0/1/2/3 = forward/forward/backward/backward
+    left:      0/1/2/3 = backward/forward/backward/forward
+    right:     0/1/2/3 = forward/backward/forward/backward
 """
 
 from __future__ import annotations
@@ -38,6 +47,15 @@ MOTOR_LABELS = {
     1: "left-rear",
     2: "right-rear",
     3: "right-front",
+}
+
+EXPECTED_DIRECTIONS = {
+    "forward": "0/1/2/3 = forward/forward/forward/forward",
+    "backward": "0/1/2/3 = backward/backward/backward/backward",
+    "turn-left": "0/1/2/3 = backward/backward/forward/forward",
+    "turn-right": "0/1/2/3 = forward/forward/backward/backward",
+    "left": "0/1/2/3 = backward/forward/backward/forward",
+    "right": "0/1/2/3 = forward/backward/forward/backward",
 }
 
 
@@ -101,9 +119,19 @@ def parse_set_args(values: list[str]) -> list[str]:
 
 def build_steps(args: argparse.Namespace) -> list[VelocityStep]:
     if args.pattern == "forward":
-        return [VelocityStep(args.vx, 0.0, 0.0, args.duration)]
+        return [VelocityStep(abs(args.vx), 0.0, 0.0, args.duration)]
+    if args.pattern == "backward":
+        return [VelocityStep(-abs(args.vx), 0.0, 0.0, args.duration)]
+    if args.pattern == "left":
+        return [VelocityStep(0.0, abs(args.vy), 0.0, args.duration)]
+    if args.pattern == "right":
+        return [VelocityStep(0.0, -abs(args.vy), 0.0, args.duration)]
     if args.pattern == "strafe":
         return [VelocityStep(0.0, args.vy, 0.0, args.duration)]
+    if args.pattern == "turn-left":
+        return [VelocityStep(0.0, 0.0, abs(args.wz), args.duration)]
+    if args.pattern == "turn-right":
+        return [VelocityStep(0.0, 0.0, -abs(args.wz), args.duration)]
     if args.pattern == "rotate":
         return [VelocityStep(0.0, 0.0, args.wz, args.duration)]
     if args.pattern == "square":
@@ -167,7 +195,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--no-stop", action="store_true", help="leave the command active instead of stopping at the end")
     parser.add_argument("--dry-run", action="store_true", help="print intended action without opening serial port")
 
-    parser.add_argument("--pattern", choices=("forward", "strafe", "rotate", "square"), default="forward")
+    parser.add_argument("--pattern", choices=("forward", "backward", "left", "right", "strafe", "turn-left", "turn-right", "rotate", "square"), default="forward")
     parser.add_argument("--vx", type=float, default=0.10, help="forward speed in m/s")
     parser.add_argument("--vy", type=float, default=0.10, help="strafe speed in m/s")
     parser.add_argument("--wz", type=float, default=0.30, help="yaw speed in rad/s")
@@ -183,6 +211,11 @@ def main(argv: list[str]) -> int:
     if args.dry_run:
         print(f"mode={args.mode}, port={args.port}, baud={args.baud}")
         print("motor map: 0=left-front, 1=left-rear, 2=right-rear, 3=right-front")
+        if args.mode == "velocity":
+            for step in build_steps(args):
+                print(f">> VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}")
+            if args.pattern in EXPECTED_DIRECTIONS:
+                print(f"expected: {EXPECTED_DIRECTIONS[args.pattern]}")
         for command in set_commands:
             print(f">> {command}")
         if args.commit:
@@ -213,3 +246,4 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
+
