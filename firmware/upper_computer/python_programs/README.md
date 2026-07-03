@@ -1,5 +1,33 @@
 # Chassis USART1 Bring-up Tools
 
+## Current Protocol State
+
+Current flashed firmware and source default use the formal binary protocol:
+
+```c
+#define CHASSIS_USE_DEBUG_PROTOCOL 0U
+```
+
+Formal protocol should be tested with `--mode mowen` or raw binary frames. ASCII commands such as `VEL`, `PWMTEST`, `MSET`, and `SET` are still preserved in firmware, but they are active only after rebuilding with:
+
+```c
+#define CHASSIS_USE_DEBUG_PROTOCOL 1U
+```
+
+Formal protocol frames:
+
+```text
+init:  11 00 00 00 00 00 00 00 00
+cmd:   AA BB 0A 12 02 XL XH YL YH ZL ZH 00
+fb:    AA BB 0A 12 XL XH YL YH ZL ZH 00 CHECKSUM
+cksum: sum(fb[2]..fb[9]) & 0xFF
+```
+
+COM16 formal protocol test command:
+
+```powershell
+python chassis_bringup_test.py --port COM16 --mode mowen --pattern forward --vx 0.2 --duration 2
+```
 This directory contains PC-side helper scripts for the migrated STM32F407 chassis firmware.
 The current bring-up path uses USART1 at 115200 baud. In the present test bench the USB-UART is `COM16`.
 
@@ -56,10 +84,10 @@ MOWEN production input is a 12-byte binary frame:
 [11] 0x00
 ```
 
-MOWEN production feedback is also 12 bytes:
+MOWEN/formal production feedback is also 12 bytes:
 
 ```text
-AA BB mode profile vx_l vx_h vy_l vy_h wz_l wz_h 00 checksum
+AA BB 0A 12 vx_l vx_h vy_l vy_h wz_l wz_h 00 checksum
 ```
 
 The feedback checksum is `sum(frame[2]..frame[9]) & 0xFF`, matching the protocol note.
@@ -212,3 +240,4 @@ MSET,2,3,36.74
 ```
 
 Firmware feedback lines include the current values as `kp/ki/kd/kv/ks/olim/ilim/db` for each motor, so parameter writes can be confirmed from UART output.
+

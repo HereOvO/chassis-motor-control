@@ -16,7 +16,7 @@ extern "C" {
  *   0: MOWEN production binary protocol from MOWEN car sensor/chassis spec.
  */
 #ifndef CHASSIS_USE_DEBUG_PROTOCOL
-#define CHASSIS_USE_DEBUG_PROTOCOL 1U
+#define CHASSIS_USE_DEBUG_PROTOCOL 0U
 #endif
 
 #define CHASSIS_WHEEL_RADIUS_MIN_M 0.01f
@@ -130,7 +130,8 @@ typedef enum
     CHASSIS_CMD_PARAM_RESTORE = 7U,
     CHASSIS_CMD_ZERO = 8U,
     CHASSIS_CMD_RAW_PWM = 9U,
-    CHASSIS_CMD_MOTOR_PARAM_SET = 10U
+    CHASSIS_CMD_MOTOR_PARAM_SET = 10U,
+    CHASSIS_CMD_INIT = 11U
 } chassis_cmd_type_t;
 
 #define CHASSIS_CMD_FLAG_ZERO_OUTPUT (1UL << 0)
@@ -183,6 +184,8 @@ bool chassis_config_validate_profile(const chassis_profile_t *profile);
 #endif
 
 #endif /* CHASSIS_CONFIG_H */
+
+
 
 
 

@@ -73,7 +73,7 @@ Only one active chassis task is used for the motor chain:
 
 ## Command Protocol
 
-ASCII mode is the default. Commands are comma-separated and end with CR/LF or LF.
+Formal binary protocol is the current default build (`CHASSIS_USE_DEBUG_PROTOCOL=0U`). The preserved ASCII debug protocol is available only when rebuilding with `CHASSIS_USE_DEBUG_PROTOCOL=1U`; ASCII commands are comma-separated and end with CR/LF or LF.
 
 ```text
 ENABLE,1
@@ -105,6 +105,51 @@ Profiles:
 - `0`: differential compatibility profile.
 - `1`: mecanum main profile and default profile.
 
+
+## Current Formal Binary Protocol
+
+The current default source and flashed firmware use the formal binary protocol documented in the repository root new communication protocol document:
+
+```c
+#define CHASSIS_USE_DEBUG_PROTOCOL 0U
+```
+
+Input frames on USART1:
+
+```text
+init: 11 00 00 00 00 00 00 00 00
+cmd:  AA BB 0A 12 02 XL XH YL YH ZL ZH 00
+```
+
+Velocity encoding:
+
+```text
+X = int16(vx * 1000), little-endian
+Y = int16(vy * 1000), little-endian
+Z = int16(wz * 1000), little-endian
+```
+
+The initialization frame resets odometry and stops the chassis. A valid velocity frame automatically enters velocity mode and runs mecanum inverse kinematics.
+
+Feedback frame:
+
+```text
+AA BB 0A 12 XL XH YL YH ZL ZH 00 CHECKSUM
+```
+
+Checksum:
+
+```text
+CHECKSUM = (0x0A + 0x12 + XL + XH + YL + YH + ZL + ZH) & 0xFF
+```
+
+The formal protocol was flashed and verified on COM16 after the update. Zero-speed feedback was observed as:
+
+```text
+AA BB 0A 12 00 00 00 00 00 00 00 1C
+```
+
+See `docx/formal_protocol_status.md` for the detailed protocol record and test notes.
 ## Runtime Tunable Parameters
 
 `SET,<param_id>,<value>` updates the active profile in RAM. `COMMIT` commits to
@@ -127,7 +172,7 @@ the RAM committed copy only; it does not write flash.
 | 12 | max angular accel | rad/s^2 |
 | 13 | PWM limit | timer counts |
 
-PID parameters are not exposed through the current ASCII protocol yet.
+Per-motor PID and feedforward parameters are exposed in the preserved ASCII debug protocol with `MSET,<motor_id>,<param_id>,<value>`. This debug protocol is inactive in the current formal binary build.
 
 ## Raw PWM Test Command
 
@@ -236,3 +281,5 @@ Reset behavior:
 5. Stop with `VEL,0.00,0.00,0.00`, then `ENABLE,0`.
 6. Check encoder deltas and `chassis_odometry_get()` in debugger.
 7. Adjust direction signs with `SET,5..8,-1/1` if wheel directions are inverted.
+
+

@@ -160,8 +160,8 @@ void chassis_feedback_report(void)
 
     frame[0] = 0xAAU;
     frame[1] = 0xBBU;
-    frame[2] = (uint8_t)chassis_mode_get_active_mode();
-    frame[3] = (uint8_t)chassis_mode_get_active_profile();
+    frame[2] = 0x0AU;
+    frame[3] = 0x12U;
     chassis_feedback_put_i16_le(&frame[4], chassis_feedback_scale_i16(odom.vx_mps));
     chassis_feedback_put_i16_le(&frame[6], chassis_feedback_scale_i16(odom.vy_mps));
     chassis_feedback_put_i16_le(&frame[8], chassis_feedback_scale_i16(odom.wz_radps));
@@ -176,5 +176,6 @@ void chassis_feedback_report(void)
     (void)HAL_UART_Transmit(&huart1, frame, sizeof(frame), 20U);
 #endif
 }
+
 
 

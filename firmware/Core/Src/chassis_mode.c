@@ -217,6 +217,13 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         }
         return true;
 
+    case CHASSIS_CMD_INIT:
+        g_active_mode = CHASSIS_MODE_STOP;
+        g_raw_pwm_active = 0U;
+        chassis_odometry_reset();
+        chassis_mode_stop_motion();
+        return true;
+
     case CHASSIS_CMD_ZERO:
         g_active_mode = CHASSIS_MODE_STOP;
         g_raw_pwm_active = 0U;
@@ -264,5 +271,6 @@ bool chassis_mode_raw_pwm_active(void)
 {
     return g_raw_pwm_active != 0U;
 }
+
 
 
