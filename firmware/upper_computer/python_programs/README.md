@@ -21,6 +21,55 @@ Always send stop before changing long-running motion commands:
 python chassis_bringup_test.py --port COM16 --mode stop
 ```
 
+
+## Protocol Build Switch
+
+Firmware selects the active UART protocol at build time in `Core/Inc/chassis_config.h`:
+
+```c
+#define CHASSIS_USE_DEBUG_PROTOCOL 1U
+```
+
+Use `1U` for the ASCII debug protocol used during bring-up. Use `0U` for the MOWEN production binary protocol described in `MOWEN??????????.md`.
+
+Debug protocol input is ASCII, for example:
+
+```text
+VEL,0.800,0.000,0.000
+PWMTEST,2,-1,1.000
+```
+
+MOWEN production input is a 12-byte binary frame:
+
+```text
+[0]  0xAA
+[1]  0xBB
+[2]  0x0A
+[3]  0x12
+[4]  0x02
+[5]  vx low byte   int16 little-endian, m/s * 1000
+[6]  vx high byte
+[7]  vy low byte   int16 little-endian, m/s * 1000
+[8]  vy high byte
+[9]  wz low byte   int16 little-endian, rad/s * 1000
+[10] wz high byte
+[11] 0x00
+```
+
+MOWEN production feedback is also 12 bytes:
+
+```text
+AA BB mode profile vx_l vx_h vy_l vy_h wz_l wz_h 00 checksum
+```
+
+The feedback checksum is `sum(frame[2]..frame[9]) & 0xFF`, matching the protocol note.
+
+The test script can dry-run or send MOWEN frames:
+
+```powershell
+python chassis_bringup_test.py --port COM16 --mode mowen --pattern forward --vx 0.8 --dry-run
+python chassis_bringup_test.py --port COM16 --mode mowen --pattern right --vy 0.5 --duration 10000 --no-stop
+```
 ## Firmware Commands Used
 
 The script sends ASCII commands terminated by CRLF:
@@ -116,3 +165,50 @@ python chassis_bringup_test.py --port COM16 --mode listen --duration 5
 The older `serial_server.py`, `sender_client.py`, and `receiver_client.py` files are legacy ZeroMQ tools from the original project. They are not required for the current USART1 bring-up path.
 
 If no PWM waveform is visible on an output pin, first check whether the command requested 100% duty. A 100% compare value can appear as a static high level instead of a square wave.
+
+
+## Per-Motor PID and Feedforward Tuning
+
+Each motor has an independent control profile in firmware. The ASCII debug protocol supports online tuning with:
+
+```text
+MSET,<motor_id>,<param_id>,<value>
+```
+
+Motor ids:
+
+```text
+0 = left-front
+1 = left-rear
+2 = right-rear
+3 = right-front
+```
+
+Parameter ids:
+
+```text
+0 = kp
+1 = ki
+2 = kd
+3 = kv          feedforward velocity gain
+4 = k_static    static feedforward/friction offset
+5 = output_limit
+6 = integral_limit
+7 = deadband_rpm
+```
+
+Examples:
+
+```powershell
+python chassis_bringup_test.py --port COM16 --mset 0:kp=60 --mset 0:ki=8 --mode listen --duration 1
+python chassis_bringup_test.py --port COM16 --mset 2:kp=230 --mset 2:kv=36.74 --mode velocity --pattern forward --vx 0.5 --duration 5
+```
+
+The script converts names to `MSET` commands. For direct serial tools, send for example:
+
+```text
+MSET,2,0,230
+MSET,2,3,36.74
+```
+
+Firmware feedback lines include the current values as `kp/ki/kd/kv/ks/olim/ilim/db` for each motor, so parameter writes can be confirmed from UART output.

@@ -1,11 +1,14 @@
 #include "chassis_feedback.h"
 
+#include "chassis_config.h"
 #include "chassis_mode.h"
 #include "chassis_odometry.h"
+#include "usart.h"
+
+#if CHASSIS_USE_DEBUG_PROTOCOL
 #include "motor_control.h"
 #include "motor_driver.h"
 #include "motor_feedback.h"
-#include "usart.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -31,9 +34,41 @@ static void chassis_feedback_send_text(const char *text)
 
     (void)HAL_UART_Transmit(&huart1, (uint8_t *)text, (uint16_t)strlen(text), 20U);
 }
+#else
+static int16_t chassis_feedback_scale_i16(float value)
+{
+    float scaled;
+
+    scaled = value * 1000.0f;
+    if (scaled > 32767.0f) {
+        return 32767;
+    }
+    if (scaled < -32768.0f) {
+        return -32768;
+    }
+    if (scaled >= 0.0f) {
+        return (int16_t)(scaled + 0.5f);
+    }
+    return (int16_t)(scaled - 0.5f);
+}
+
+static void chassis_feedback_put_i16_le(uint8_t *dst, int16_t value)
+{
+    uint16_t raw;
+
+    if (dst == NULL) {
+        return;
+    }
+
+    raw = (uint16_t)value;
+    dst[0] = (uint8_t)(raw & 0xFFU);
+    dst[1] = (uint8_t)((raw >> 8) & 0xFFU);
+}
+#endif
 
 void chassis_feedback_report(void)
 {
+#if CHASSIS_USE_DEBUG_PROTOCOL
     char line[192];
     chassis_odometry_t odom;
     Motor_Status_t status[MOTOR_COUNT];
@@ -80,12 +115,14 @@ void chassis_feedback_report(void)
     for (i = 0U; i < MOTOR_COUNT; ++i) {
         const char *forward_state;
         const char *reverse_state;
+        const MotorPidProfile_t *pid;
 
         forward_state = (output[i].forward_ccr > 0U) ? "PWM" : "LOW";
         reverse_state = (output[i].reverse_ccr > 0U) ? "PWM" : "LOW";
+        pid = MotorControlCore_GetProfile(i);
         len = snprintf(line,
                        sizeof(line),
-                       "M%u,target=%.1f,rpm=%.1f,delta=%ld,total=%ld,dir=%d,duty=%.3f,%s=%s(%lu),%s=%s(%lu)\r\n",
+                       "M%u,target=%.1f,rpm=%.1f,delta=%ld,total=%ld,dir=%d,duty=%.3f,kp=%.3f,ki=%.3f,kd=%.3f,kv=%.3f,ks=%.3f,olim=%.1f,ilim=%.1f,db=%.2f,%s=%s(%lu),%s=%s(%lu)\r\n",
                        (unsigned int)i,
                        target[i],
                        status[i].speed_rpm,
@@ -93,6 +130,14 @@ void chassis_feedback_report(void)
                        (long)status[i].total_count,
                        (int)output[i].direction,
                        output[i].duty_norm,
+                       (pid != NULL) ? pid->kp : 0.0f,
+                       (pid != NULL) ? pid->ki : 0.0f,
+                       (pid != NULL) ? pid->kd : 0.0f,
+                       (pid != NULL) ? pid->kv : 0.0f,
+                       (pid != NULL) ? pid->k_static : 0.0f,
+                       (pid != NULL) ? pid->output_limit : 0.0f,
+                       (pid != NULL) ? pid->integral_limit : 0.0f,
+                       (pid != NULL) ? pid->deadband_rpm : 0.0f,
                        g_feedback_motor_pin[i].forward_pin,
                        forward_state,
                        (unsigned long)output[i].forward_ccr,
@@ -105,4 +150,31 @@ void chassis_feedback_report(void)
     }
 
     chassis_feedback_send_text("\r\n");
+#else
+    uint8_t frame[12];
+    uint8_t checksum;
+    uint8_t i;
+    chassis_odometry_t odom;
+
+    odom = chassis_odometry_get();
+
+    frame[0] = 0xAAU;
+    frame[1] = 0xBBU;
+    frame[2] = (uint8_t)chassis_mode_get_active_mode();
+    frame[3] = (uint8_t)chassis_mode_get_active_profile();
+    chassis_feedback_put_i16_le(&frame[4], chassis_feedback_scale_i16(odom.vx_mps));
+    chassis_feedback_put_i16_le(&frame[6], chassis_feedback_scale_i16(odom.vy_mps));
+    chassis_feedback_put_i16_le(&frame[8], chassis_feedback_scale_i16(odom.wz_radps));
+    frame[10] = 0x00U;
+
+    checksum = 0U;
+    for (i = 2U; i <= 9U; ++i) {
+        checksum = (uint8_t)(checksum + frame[i]);
+    }
+    frame[11] = checksum;
+
+    (void)HAL_UART_Transmit(&huart1, frame, sizeof(frame), 20U);
+#endif
 }
+
+

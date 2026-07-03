@@ -30,6 +30,7 @@ Validated wheel directions with current firmware and wiring:
 from __future__ import annotations
 
 import argparse
+import struct
 import sys
 import time
 from dataclasses import dataclass
@@ -49,6 +50,21 @@ MOTOR_LABELS = {
     3: "right-front",
 }
 
+MOTOR_PARAM_IDS = {
+    "kp": 0,
+    "ki": 1,
+    "kd": 2,
+    "kv": 3,
+    "ks": 4,
+    "k_static": 4,
+    "output_limit": 5,
+    "olim": 5,
+    "integral_limit": 6,
+    "ilim": 6,
+    "deadband": 7,
+    "deadband_rpm": 7,
+    "db": 7,
+}
 EXPECTED_DIRECTIONS = {
     "forward": "0/1/2/3 = forward/forward/forward/forward",
     "backward": "0/1/2/3 = backward/backward/backward/backward",
@@ -117,6 +133,23 @@ def parse_set_args(values: list[str]) -> list[str]:
     return commands
 
 
+
+def parse_mset_args(values: list[str]) -> list[str]:
+    commands: list[str] = []
+    for item in values:
+        if "=" not in item or ":" not in item:
+            raise ValueError(f"invalid --mset item {item!r}, expected motor:param=value")
+        lhs, value = item.split("=", 1)
+        motor_text, param_text = lhs.split(":", 1)
+        motor_id = int(motor_text, 10)
+        key = param_text.strip().lower()
+        if motor_id < 0 or motor_id > 3:
+            raise ValueError("--mset motor id must be 0..3")
+        if key not in MOTOR_PARAM_IDS:
+            raise ValueError(f"unknown motor param {param_text!r}")
+        commands.append(f"MSET,{motor_id},{MOTOR_PARAM_IDS[key]},{float(value):.6g}")
+    return commands
+
 def build_steps(args: argparse.Namespace) -> list[VelocityStep]:
     if args.pattern == "forward":
         return [VelocityStep(abs(args.vx), 0.0, 0.0, args.duration)]
@@ -144,6 +177,24 @@ def build_steps(args: argparse.Namespace) -> list[VelocityStep]:
     raise ValueError(f"unsupported pattern: {args.pattern}")
 
 
+
+def clamp_i16_scaled(value: float) -> int:
+    scaled = int(round(value * 1000.0))
+    return max(-32768, min(32767, scaled))
+
+
+def build_mowen_frame(vx: float, vy: float, wz: float) -> bytes:
+    return b"\xAA\xBB\x0A\x12\x02" + struct.pack("<hhhB", clamp_i16_scaled(vx), clamp_i16_scaled(vy), clamp_i16_scaled(wz), 0)
+
+
+def send_mowen_frame(port: serial.Serial, step: VelocityStep, delay_s: float = 0.05) -> None:
+    frame = build_mowen_frame(step.vx, step.vy, step.wz)
+    print(f">> MOWEN {frame.hex(' ').upper()}  VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}")
+    port.write(frame)
+    port.flush()
+    if delay_s > 0.0:
+        time.sleep(delay_s)
+
 def run_velocity(port: serial.Serial, args: argparse.Namespace) -> None:
     send_commands(port, ("ASCII", "ZERO", "PROFILE,1", "MODE,1", "ENABLE,1"))
     for step in build_steps(args):
@@ -154,6 +205,16 @@ def run_velocity(port: serial.Serial, args: argparse.Namespace) -> None:
     else:
         stop_chassis(port)
 
+
+
+def run_mowen(port: serial.Serial, args: argparse.Namespace) -> None:
+    for step in build_steps(args):
+        send_mowen_frame(port, step)
+        read_feedback(port, step.duration_s if args.monitor else step.duration_s)
+    if args.no_stop:
+        print("Leaving MOWEN velocity command active because --no-stop was set.")
+    else:
+        send_mowen_frame(port, VelocityStep(0.0, 0.0, 0.0, 0.0))
 
 def run_pwmtest(port: serial.Serial, args: argparse.Namespace) -> None:
     if args.motor is None or args.direction is None:
@@ -189,7 +250,7 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description="Migrated chassis USART1 bring-up tester")
     parser.add_argument("--port", required=True, help="serial port, for example COM16")
     parser.add_argument("--baud", type=int, default=DEFAULT_BAUD, help="baud rate, default 115200")
-    parser.add_argument("--mode", choices=("velocity", "pwmtest", "stop", "listen"), default="velocity")
+    parser.add_argument("--mode", choices=("velocity", "mowen", "pwmtest", "stop", "listen"), default="velocity")
     parser.add_argument("--duration", type=float, default=1.0, help="test/listen duration in seconds")
     parser.add_argument("--monitor", action="store_true", help="print firmware feedback while running")
     parser.add_argument("--no-stop", action="store_true", help="leave the command active instead of stopping at the end")
@@ -199,7 +260,8 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--vx", type=float, default=0.10, help="forward speed in m/s")
     parser.add_argument("--vy", type=float, default=0.10, help="strafe speed in m/s")
     parser.add_argument("--wz", type=float, default=0.30, help="yaw speed in rad/s")
-    parser.add_argument("--set", action="append", default=[], help="runtime parameter id=value, repeatable")
+    parser.add_argument("--set", action="append", default=[], help="runtime chassis parameter id=value, repeatable")
+    parser.add_argument("--mset", action="append", default=[], help="motor control parameter motor:param=value, e.g. 2:kp=220")
     parser.add_argument("--commit", action="store_true", help="send COMMIT after --set commands")
 
     parser.add_argument("--motor", type=int, help="PWMTEST motor id, 0..3")
@@ -207,13 +269,17 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--duty", type=float, default=1.0, help="PWMTEST duty, 0.0..1.0")
     args = parser.parse_args(argv)
 
-    set_commands = parse_set_args(args.set)
+    set_commands = parse_set_args(args.set) + parse_mset_args(args.mset)
     if args.dry_run:
         print(f"mode={args.mode}, port={args.port}, baud={args.baud}")
         print("motor map: 0=left-front, 1=left-rear, 2=right-rear, 3=right-front")
-        if args.mode == "velocity":
+        if args.mode in ("velocity", "mowen"):
             for step in build_steps(args):
-                print(f">> VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}")
+                if args.mode == "mowen":
+                    frame_hex = build_mowen_frame(step.vx, step.vy, step.wz).hex(" ").upper()
+                    print(f">> MOWEN {frame_hex}  VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}")
+                else:
+                    print(f">> VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}")
             if args.pattern in EXPECTED_DIRECTIONS:
                 print(f"expected: {EXPECTED_DIRECTIONS[args.pattern]}")
         for command in set_commands:
@@ -246,4 +312,8 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
+
+
+
+
 

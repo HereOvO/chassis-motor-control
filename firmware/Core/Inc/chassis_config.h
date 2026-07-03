@@ -10,6 +10,15 @@ extern "C" {
 
 #define CHASSIS_WHEEL_COUNT 4U
 
+/*
+ * Protocol build switch:
+ *   1: ASCII debug protocol, keeps VEL/PWMTEST/SET commands for bring-up.
+ *   0: MOWEN production binary protocol from MOWEN car sensor/chassis spec.
+ */
+#ifndef CHASSIS_USE_DEBUG_PROTOCOL
+#define CHASSIS_USE_DEBUG_PROTOCOL 1U
+#endif
+
 #define CHASSIS_WHEEL_RADIUS_MIN_M 0.01f
 #define CHASSIS_WHEEL_RADIUS_MAX_M 0.30f
 #define CHASSIS_TRACK_WIDTH_MIN_M 0.05f
@@ -70,6 +79,12 @@ typedef enum
     CHASSIS_PROTOCOL_MODE_MOWEN = 1U
 } chassis_protocol_mode_t;
 
+#if CHASSIS_USE_DEBUG_PROTOCOL
+#define CHASSIS_DEFAULT_PROTOCOL_MODE CHASSIS_PROTOCOL_MODE_ASCII
+#else
+#define CHASSIS_DEFAULT_PROTOCOL_MODE CHASSIS_PROTOCOL_MODE_MOWEN
+#endif
+
 typedef enum
 {
     RUNTIME_PARAM_WHEEL_RADIUS = 0U,
@@ -89,6 +104,20 @@ typedef enum
     RUNTIME_PARAM_COUNT = 14U
 } runtime_param_id_t;
 
+
+typedef enum
+{
+    MOTOR_PARAM_KP = 0U,
+    MOTOR_PARAM_KI = 1U,
+    MOTOR_PARAM_KD = 2U,
+    MOTOR_PARAM_KV = 3U,
+    MOTOR_PARAM_K_STATIC = 4U,
+    MOTOR_PARAM_OUTPUT_LIMIT = 5U,
+    MOTOR_PARAM_INTEGRAL_LIMIT = 6U,
+    MOTOR_PARAM_DEADBAND_RPM = 7U,
+    MOTOR_PARAM_COUNT = 8U
+} motor_control_param_id_t;
+
 typedef enum
 {
     CHASSIS_CMD_NONE = 0U,
@@ -100,12 +129,14 @@ typedef enum
     CHASSIS_CMD_PARAM_COMMIT = 6U,
     CHASSIS_CMD_PARAM_RESTORE = 7U,
     CHASSIS_CMD_ZERO = 8U,
-    CHASSIS_CMD_RAW_PWM = 9U
+    CHASSIS_CMD_RAW_PWM = 9U,
+    CHASSIS_CMD_MOTOR_PARAM_SET = 10U
 } chassis_cmd_type_t;
 
 #define CHASSIS_CMD_FLAG_ZERO_OUTPUT (1UL << 0)
 #define CHASSIS_CMD_FLAG_RESET_INTEGRATOR (1UL << 1)
 #define CHASSIS_CMD_FLAG_PROFILE_SWITCH (1UL << 2)
+#define CHASSIS_CMD_FLAG_AUTO_ENABLE (1UL << 3)
 
 typedef struct
 {
@@ -131,6 +162,7 @@ typedef struct
     chassis_mode_t mode;
     chassis_profile_id_t profile_id;
     runtime_param_id_t param_id;
+    motor_control_param_id_t motor_param_id;
     float vx_mps;
     float vy_mps;
     float wz_radps;
@@ -151,3 +183,9 @@ bool chassis_config_validate_profile(const chassis_profile_t *profile);
 #endif
 
 #endif /* CHASSIS_CONFIG_H */
+
+
+
+
+
+

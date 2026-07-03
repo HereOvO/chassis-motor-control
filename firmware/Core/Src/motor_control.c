@@ -136,6 +136,109 @@ const MotorPidProfile_t *MotorControlCore_GetProfile(uint8_t motor_id)
     return &s_profile[motor_id];
 }
 
+
+static bool motor_control_param_value_valid(motor_control_param_id_t param_id, float value)
+{
+    switch (param_id) {
+    case MOTOR_PARAM_KP:
+    case MOTOR_PARAM_KI:
+    case MOTOR_PARAM_KD:
+    case MOTOR_PARAM_KV:
+    case MOTOR_PARAM_K_STATIC:
+    case MOTOR_PARAM_OUTPUT_LIMIT:
+    case MOTOR_PARAM_INTEGRAL_LIMIT:
+    case MOTOR_PARAM_DEADBAND_RPM:
+        return (value >= 0.0f && value <= 100000.0f);
+    default:
+        return false;
+    }
+}
+
+bool MotorControlCore_SetParam(uint8_t motor_id, motor_control_param_id_t param_id, float value)
+{
+    MotorPidProfile_t profile;
+
+    if (motor_id >= MOTOR_COUNT || !motor_control_param_value_valid(param_id, value)) {
+        return false;
+    }
+
+    profile = s_profile[motor_id];
+    switch (param_id) {
+    case MOTOR_PARAM_KP:
+        profile.kp = value;
+        break;
+    case MOTOR_PARAM_KI:
+        profile.ki = value;
+        break;
+    case MOTOR_PARAM_KD:
+        profile.kd = value;
+        break;
+    case MOTOR_PARAM_KV:
+        profile.kv = value;
+        break;
+    case MOTOR_PARAM_K_STATIC:
+        profile.k_static = value;
+        break;
+    case MOTOR_PARAM_OUTPUT_LIMIT:
+        profile.output_limit = value;
+        break;
+    case MOTOR_PARAM_INTEGRAL_LIMIT:
+        profile.integral_limit = value;
+        break;
+    case MOTOR_PARAM_DEADBAND_RPM:
+        profile.deadband_rpm = value;
+        break;
+    default:
+        return false;
+    }
+
+    MotorControlCore_SetProfile(motor_id, &profile);
+    MotorControlCore_ResetIntegrator(motor_id);
+    return true;
+}
+
+bool MotorControlCore_GetParam(uint8_t motor_id, motor_control_param_id_t param_id, float *value)
+{
+    const MotorPidProfile_t *profile;
+
+    if (motor_id >= MOTOR_COUNT || value == NULL) {
+        return false;
+    }
+
+    profile = MotorControlCore_GetProfile(motor_id);
+    if (profile == NULL) {
+        return false;
+    }
+
+    switch (param_id) {
+    case MOTOR_PARAM_KP:
+        *value = profile->kp;
+        return true;
+    case MOTOR_PARAM_KI:
+        *value = profile->ki;
+        return true;
+    case MOTOR_PARAM_KD:
+        *value = profile->kd;
+        return true;
+    case MOTOR_PARAM_KV:
+        *value = profile->kv;
+        return true;
+    case MOTOR_PARAM_K_STATIC:
+        *value = profile->k_static;
+        return true;
+    case MOTOR_PARAM_OUTPUT_LIMIT:
+        *value = profile->output_limit;
+        return true;
+    case MOTOR_PARAM_INTEGRAL_LIMIT:
+        *value = profile->integral_limit;
+        return true;
+    case MOTOR_PARAM_DEADBAND_RPM:
+        *value = profile->deadband_rpm;
+        return true;
+    default:
+        return false;
+    }
+}
 void MotorControlCore_SetTargets(const float target_rpm[MOTOR_COUNT])
 {
     if (target_rpm == NULL) {
@@ -235,3 +338,4 @@ void MotorControlCore_Compute(float out_cmd[MOTOR_COUNT])
         out_cmd[motor_id] = output_norm;
     }
 }
+

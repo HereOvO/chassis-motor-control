@@ -39,7 +39,7 @@ typedef struct
 } chassis_protocol_rx_ring_t;
 
 static UART_HandleTypeDef *g_protocol_uart = NULL;
-static chassis_protocol_mode_t g_protocol_mode = CHASSIS_PROTOCOL_MODE_ASCII;
+static chassis_protocol_mode_t g_protocol_mode = CHASSIS_DEFAULT_PROTOCOL_MODE;
 static chassis_protocol_parse_state_t g_parse_state = CHASSIS_PROTOCOL_PARSE_IDLE;
 static chassis_protocol_rx_ring_t g_rx_ring;
 static char g_ascii_line[CHASSIS_PROTOCOL_ASCII_LINE_MAX];
@@ -344,6 +344,25 @@ static bool chassis_protocol_parse_ascii_line(char *line)
         return chassis_protocol_store_cmd(&cmd);
     }
 
+    if (strcmp(token, "MSET") == 0 || strcmp(token, "MPARAM") == 0) {
+        uint8_t param_raw;
+
+        token = strtok(NULL, ",");
+        if (!chassis_protocol_parse_uint8(token, &cmd.motor_id) || cmd.motor_id >= CHASSIS_WHEEL_COUNT) {
+            return false;
+        }
+        token = strtok(NULL, ",");
+        if (!chassis_protocol_parse_uint8(token, &param_raw) || param_raw >= MOTOR_PARAM_COUNT) {
+            return false;
+        }
+        token = strtok(NULL, ",");
+        if (!chassis_protocol_parse_float(token, &cmd.value)) {
+            return false;
+        }
+        cmd.motor_param_id = (motor_control_param_id_t)param_raw;
+        cmd.type = CHASSIS_CMD_MOTOR_PARAM_SET;
+        return chassis_protocol_store_cmd(&cmd);
+    }
     if (strcmp(token, "SET") == 0) {
         token = strtok(NULL, ",");
         if (!chassis_protocol_parse_param_token(token, &cmd.param_id)) {
@@ -417,6 +436,7 @@ static bool chassis_protocol_parse_mowen_frame(const uint8_t frame[CHASSIS_PROTO
 
     memset(&cmd, 0, sizeof(cmd));
     cmd.type = CHASSIS_CMD_VELOCITY;
+    cmd.flags = CHASSIS_CMD_FLAG_AUTO_ENABLE;
     raw_vx = chassis_protocol_s16_le(&frame[5]);
     raw_vy = chassis_protocol_s16_le(&frame[7]);
     raw_wz = chassis_protocol_s16_le(&frame[9]);
@@ -480,7 +500,7 @@ static void chassis_protocol_parse_mowen_stream(void)
 void chassis_protocol_init(UART_HandleTypeDef *huart)
 {
     g_protocol_uart = huart;
-    g_protocol_mode = CHASSIS_PROTOCOL_MODE_ASCII;
+    g_protocol_mode = CHASSIS_DEFAULT_PROTOCOL_MODE;
     g_parse_state = CHASSIS_PROTOCOL_PARSE_IDLE;
     g_ascii_length = 0U;
     g_ascii_line_ready = 0U;
@@ -569,3 +589,6 @@ void chassis_protocol_reset(void)
     chassis_protocol_ring_reset();
     chassis_protocol_clear_pending();
 }
+
+
+

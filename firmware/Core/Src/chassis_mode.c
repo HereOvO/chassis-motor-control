@@ -180,6 +180,12 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
     case CHASSIS_CMD_PROFILE:
         return chassis_mode_apply_profile(local_cmd.profile_id);
 
+    case CHASSIS_CMD_MOTOR_PARAM_SET:
+        if (!MotorControlCore_SetParam(local_cmd.motor_id, local_cmd.motor_param_id, local_cmd.value)) {
+            return false;
+        }
+        chassis_mode_reset_integrators();
+        return true;
     case CHASSIS_CMD_PARAM_SET:
         if (!runtime_tune_set_param(local_cmd.param_id, local_cmd.value)) {
             return false;
@@ -223,6 +229,9 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
 
     case CHASSIS_CMD_VELOCITY:
         g_raw_pwm_active = 0U;
+        if ((local_cmd.flags & CHASSIS_CMD_FLAG_AUTO_ENABLE) != 0UL) {
+            g_active_mode = CHASSIS_MODE_VELOCITY;
+        }
         if (!chassis_mode_motion_enabled()) {
             chassis_mode_clear_targets();
             chassis_mode_stop_motion();
@@ -255,3 +264,5 @@ bool chassis_mode_raw_pwm_active(void)
 {
     return g_raw_pwm_active != 0U;
 }
+
+
