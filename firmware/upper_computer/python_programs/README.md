@@ -8,7 +8,7 @@ Current flashed firmware and source default use the formal binary protocol:
 #define CHASSIS_USE_DEBUG_PROTOCOL 0U
 ```
 
-Formal protocol should be tested with `--mode mowen` or raw binary frames. ASCII commands such as `VEL`, `PWMTEST`, `MSET`, and `SET` are still preserved in firmware, but they are active only after rebuilding with:
+Formal protocol should be tested with `--mode mowen` or raw binary frames. ASCII commands such as `VEL`, `PWMTEST`, `MSET`, and `SET` are still preserved in firmware. `CHASSIS_USE_DEBUG_PROTOCOL` now only changes the boot-time default:
 
 ```c
 #define CHASSIS_USE_DEBUG_PROTOCOL 1U
@@ -23,6 +23,17 @@ fb:    AA BB 0A 12 XL XH YL YH ZL ZH 00 CHECKSUM
 cksum: sum(fb[2]..fb[9]) & 0xFF
 ```
 
+Dedicated runtime protocol-switch frame:
+
+```text
+switch: FE EF 50 MM CC FD
+MM=00 -> ASCII
+MM=01 -> MOWEN
+CC=(0x50 + MM) & 0xFF
+ASCII switch example: FE EF 50 00 50 FD
+MOWEN switch example: FE EF 50 01 51 FD
+```
+
 COM16 formal protocol test command:
 
 ```powershell
@@ -30,6 +41,8 @@ python chassis_bringup_test.py --port COM16 --mode mowen --pattern forward --vx 
 ```
 This directory contains PC-side helper scripts for the migrated STM32F407 chassis firmware.
 The current bring-up path uses USART1 at 115200 baud. In the present test bench the USB-UART is `COM16`.
+
+The older generic `SERVO` / `POSE` protocol is preserved only as a comparison reference in `..\LEGACY_PROTOCOL_REFERENCE.md`. It is not part of the current USART1 chassis control path.
 
 ## Main Script
 
@@ -50,15 +63,17 @@ python chassis_bringup_test.py --port COM16 --mode stop
 ```
 
 
-## Protocol Build Switch
+## Protocol Boot Default
 
-Firmware selects the active UART protocol at build time in `Core/Inc/chassis_config.h`:
+Firmware selects the power-up default UART protocol in `Core/Inc/chassis_config.h`:
 
 ```c
 #define CHASSIS_USE_DEBUG_PROTOCOL 1U
 ```
 
-Use `1U` for the ASCII debug protocol used during bring-up. Use `0U` for the MOWEN production binary protocol described in `MOWEN??????????.md`.
+Use `1U` when the board should boot directly into ASCII debug mode. Use `0U` when it should boot directly into the MOWEN production binary protocol described in `MOWEN??????????.md`.
+
+If the board is already flashed, runtime switching does not require a rebuild. Send the dedicated sideband switch frame shown above.
 
 Debug protocol input is ASCII, for example:
 
@@ -112,6 +127,8 @@ VEL,<vx_mps>,<vy_mps>,<wz_radps>
 PWMTEST,<motor_id>,<direction>,<duty>
 RAWPWM,<motor_id>,<direction>,<duty>
 ```
+
+These ASCII commands become active when runtime mode is switched to `ASCII`, even if the current firmware booted in `MOWEN` mode.
 
 Velocity convention in the current firmware:
 
@@ -192,6 +209,8 @@ python chassis_bringup_test.py --port COM16 --mode listen --duration 5
 
 The older `serial_server.py`, `sender_client.py`, and `receiver_client.py` files are legacy ZeroMQ tools from the original project. They are not required for the current USART1 bring-up path.
 
+The historical `SERVO` / `POSE` protocol text is also preserved for comparison. The related reference-side scripts such as `sender_client.py`, `receiver_client.py`, and `protocol_test.py` should be treated as legacy comparison material, not as the active firmware interface.
+
 If no PWM waveform is visible on an output pin, first check whether the command requested 100% duty. A 100% compare value can appear as a static high level instead of a square wave.
 
 
@@ -225,18 +244,27 @@ Parameter ids:
 7 = deadband_rpm
 ```
 
+Current compiled startup defaults:
+
+```text
+motor 0 left-front:  kp=60.0   ki=8.0  kd=0.7  kv=28.8   k_static=6800.0  output_limit=MOTOR_PWM_ARR  integral_limit=300.0  deadband_rpm=1.0
+motor 1 left-rear:   kp=50.0   ki=10.0 kd=0.5  kv=36.74  k_static=7400.0  output_limit=MOTOR_PWM_ARR  integral_limit=300.0  deadband_rpm=1.0
+motor 2 right-rear:  kp=110.0  ki=8.0  kd=0.5  kv=37.0   k_static=6400.0  output_limit=MOTOR_PWM_ARR  integral_limit=300.0  deadband_rpm=1.0
+motor 3 right-front: kp=110.0  ki=8.0  kd=0.5  kv=42.0   k_static=5400.0  output_limit=MOTOR_PWM_ARR  integral_limit=300.0  deadband_rpm=1.0
+```
+
 Examples:
 
 ```powershell
 python chassis_bringup_test.py --port COM16 --mset 0:kp=60 --mset 0:ki=8 --mode listen --duration 1
-python chassis_bringup_test.py --port COM16 --mset 2:kp=230 --mset 2:kv=36.74 --mode velocity --pattern forward --vx 0.5 --duration 5
+python chassis_bringup_test.py --port COM16 --mset 2:kp=110 --mset 2:kv=37.0 --mode velocity --pattern forward --vx 0.5 --duration 5
 ```
 
 The script converts names to `MSET` commands. For direct serial tools, send for example:
 
 ```text
-MSET,2,0,230
-MSET,2,3,36.74
+MSET,2,0,110
+MSET,2,3,37.0
 ```
 
 Firmware feedback lines include the current values as `kp/ki/kd/kv/ks/olim/ilim/db` for each motor, so parameter writes can be confirmed from UART output.

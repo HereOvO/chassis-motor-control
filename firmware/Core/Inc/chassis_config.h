@@ -11,9 +11,12 @@ extern "C" {
 #define CHASSIS_WHEEL_COUNT 4U
 
 /*
- * Protocol build switch:
- *   1: ASCII debug protocol, keeps VEL/PWMTEST/SET commands for bring-up.
- *   0: MOWEN production binary protocol from MOWEN car sensor/chassis spec.
+ * Protocol boot default:
+ *   1: boot into ASCII debug protocol.
+ *   0: boot into MOWEN production binary protocol.
+ *
+ * Runtime protocol can still be switched by the dedicated sideband
+ * protocol-switch frame handled in chassis_protocol.c.
  */
 #ifndef CHASSIS_USE_DEBUG_PROTOCOL
 #define CHASSIS_USE_DEBUG_PROTOCOL 0U

@@ -3,12 +3,11 @@
 #include "chassis_config.h"
 #include "chassis_mode.h"
 #include "chassis_odometry.h"
-#include "usart.h"
-
-#if CHASSIS_USE_DEBUG_PROTOCOL
+#include "chassis_protocol.h"
 #include "motor_control.h"
 #include "motor_driver.h"
 #include "motor_feedback.h"
+#include "usart.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -34,7 +33,7 @@ static void chassis_feedback_send_text(const char *text)
 
     (void)HAL_UART_Transmit(&huart1, (uint8_t *)text, (uint16_t)strlen(text), 20U);
 }
-#else
+
 static int16_t chassis_feedback_scale_i16(float value)
 {
     float scaled;
@@ -64,11 +63,9 @@ static void chassis_feedback_put_i16_le(uint8_t *dst, int16_t value)
     dst[0] = (uint8_t)(raw & 0xFFU);
     dst[1] = (uint8_t)((raw >> 8) & 0xFFU);
 }
-#endif
 
-void chassis_feedback_report(void)
+static void chassis_feedback_report_ascii(void)
 {
-#if CHASSIS_USE_DEBUG_PROTOCOL
     char line[192];
     chassis_odometry_t odom;
     Motor_Status_t status[MOTOR_COUNT];
@@ -150,7 +147,10 @@ void chassis_feedback_report(void)
     }
 
     chassis_feedback_send_text("\r\n");
-#else
+}
+
+static void chassis_feedback_report_mowen(void)
+{
     uint8_t frame[12];
     uint8_t checksum;
     uint8_t i;
@@ -174,8 +174,16 @@ void chassis_feedback_report(void)
     frame[11] = checksum;
 
     (void)HAL_UART_Transmit(&huart1, frame, sizeof(frame), 20U);
-#endif
 }
 
+void chassis_feedback_report(void)
+{
+    if (chassis_protocol_get_mode() == CHASSIS_PROTOCOL_MODE_ASCII) {
+        chassis_feedback_report_ascii();
+        return;
+    }
+
+    chassis_feedback_report_mowen();
+}
 
 

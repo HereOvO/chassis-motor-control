@@ -11,10 +11,10 @@ typedef struct
 } MotorPidState_t;
 
 const MotorPidProfile_t g_motor_default_pid_profile[MOTOR_COUNT] = {
-    { .kp = 60.0f, .ki = 8.0f, .kd = 0.5f, .kv = 36.74f, .k_static = 100.0f, .output_limit = (float)MOTOR_PWM_ARR, .integral_limit = 300.0f, .deadband_rpm = 1.0f },
-    { .kp = 50.0f, .ki = 10.0f, .kd = 0.5f, .kv = 36.74f, .k_static = 100.0f, .output_limit = (float)MOTOR_PWM_ARR, .integral_limit = 300.0f, .deadband_rpm = 1.0f },
-    { .kp = 230.0f, .ki = 15.0f, .kd = 0.03f, .kv = 36.74f, .k_static = 100.0f, .output_limit = (float)MOTOR_PWM_ARR, .integral_limit = 300.0f, .deadband_rpm = 1.0f },
-    { .kp = 230.0f, .ki = 15.0f, .kd = 0.03f, .kv = 172.0f, .k_static = 100.0f, .output_limit = (float)MOTOR_PWM_ARR, .integral_limit = 300.0f, .deadband_rpm = 1.0f }
+    { .kp = 60.0f, .ki = 8.0f, .kd = 0.7f, .kv = 28.8f, .k_static = 6800.0f, .output_limit = (float)MOTOR_PWM_ARR, .integral_limit = 300.0f, .deadband_rpm = 1.0f },
+    { .kp = 50.0f, .ki = 10.0f, .kd = 0.5f, .kv = 36.74f, .k_static = 7400.0f, .output_limit = (float)MOTOR_PWM_ARR, .integral_limit = 300.0f, .deadband_rpm = 1.0f },
+    { .kp = 110.0f, .ki = 8.0f, .kd = 0.5f, .kv = 37.0f, .k_static = 6400.0f, .output_limit = (float)MOTOR_PWM_ARR, .integral_limit = 300.0f, .deadband_rpm = 1.0f },
+    { .kp = 110.0f, .ki = 8.0f, .kd = 0.5f, .kv = 42.0f, .k_static = 5400.0f, .output_limit = (float)MOTOR_PWM_ARR, .integral_limit = 300.0f, .deadband_rpm = 1.0f }
 };
 
 static MotorPidProfile_t s_profile[MOTOR_COUNT];

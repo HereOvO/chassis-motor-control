@@ -22,6 +22,17 @@ Expected result:
 0 Error(s), 0 Warning(s)
 ```
 
+## Scope Of Current Firmware
+
+The active firmware tree is now restricted to chassis motor control.
+
+- IMU / `MPU6050` support is removed from the active source tree.
+- `PCA9685` servo support is removed from the active source tree.
+- `I2C1` / `I2C2` generated source files are removed from the active source tree.
+- `UART5` servo / pose implementation is not part of the active build.
+
+The original generic `SERVO` / `POSE` protocol is preserved only as a comparison reference in `LEGACY_PROTOCOL_REFERENCE.md`. It is not the current firmware interface.
+
 ## Runtime Chain
 
 The active chain is:
@@ -71,9 +82,22 @@ Only one active chassis task is used for the motor chain:
 - Odometry update: immediately after encoder sampling, also 50 Hz.
 - PID compute and motor output: every `MOTOR_PID_CONTROL_PERIOD_MS`, currently 10 ms / 100 Hz.
 
+## Current Default Per-Motor PID Profiles
+
+The firmware source default PID/feedforward parameters were updated from actual bench test results on `2026-07-07`.
+
+| Motor ID | Wheel | kp | ki | kd | kv | k_static | output_limit | integral_limit | deadband_rpm |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | Left-front | `60.0` | `8.0` | `0.7` | `28.8` | `6800.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| 1 | Left-rear | `50.0` | `10.0` | `0.5` | `36.74` | `7400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| 2 | Right-rear | `110.0` | `8.0` | `0.5` | `37.0` | `6400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| 3 | Right-front | `110.0` | `8.0` | `0.5` | `42.0` | `5400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+
+These defaults are compiled into `Core/Src/motor_control.c`. Runtime ASCII tuning with `MSET,<motor_id>,<param_id>,<value>` is still available when the protocol is switched to `ASCII`.
+
 ## Command Protocol
 
-Formal binary protocol is the current default build (`CHASSIS_USE_DEBUG_PROTOCOL=0U`). The preserved ASCII debug protocol is available only when rebuilding with `CHASSIS_USE_DEBUG_PROTOCOL=1U`; ASCII commands are comma-separated and end with CR/LF or LF.
+Formal binary protocol is the current default boot mode (`CHASSIS_USE_DEBUG_PROTOCOL=0U`). The preserved ASCII debug protocol remains available at runtime; `CHASSIS_USE_DEBUG_PROTOCOL=1U` only changes the power-up default mode. ASCII commands are comma-separated and end with CR/LF or LF.
 
 ```text
 ENABLE,1
@@ -93,6 +117,19 @@ PWMTEST,0,1,0.30
 RAWPWM,0,-1,0.30
 ```
 
+Dedicated sideband runtime protocol-switch frame:
+
+```text
+FE EF 50 MM CC FD
+MM = 00 -> ASCII
+MM = 01 -> MOWEN
+CC = (0x50 + MM) & 0xFF
+example ASCII switch: FE EF 50 00 50 FD
+example MOWEN switch: FE EF 50 01 51 FD
+```
+
+This frame is handled before normal ASCII or MOWEN parsing. Its `FE EF` prefix is outside the valid MOWEN frame headers and outside normal printable ASCII command traffic, so it does not consume existing command space in either protocol.
+
 Modes:
 
 - `0`: stop.
@@ -108,7 +145,7 @@ Profiles:
 
 ## Current Formal Binary Protocol
 
-The current default source and flashed firmware use the formal binary protocol documented in the repository root new communication protocol document:
+The current default source and flashed firmware boot into the formal binary protocol documented in the repository root new communication protocol document:
 
 ```c
 #define CHASSIS_USE_DEBUG_PROTOCOL 0U
@@ -172,7 +209,7 @@ the RAM committed copy only; it does not write flash.
 | 12 | max angular accel | rad/s^2 |
 | 13 | PWM limit | timer counts |
 
-Per-motor PID and feedforward parameters are exposed in the preserved ASCII debug protocol with `MSET,<motor_id>,<param_id>,<value>`. This debug protocol is inactive in the current formal binary build.
+Per-motor PID and feedforward parameters are exposed in the preserved ASCII debug protocol with `MSET,<motor_id>,<param_id>,<value>`. When the firmware boots in formal mode, use the dedicated sideband switch frame first if runtime ASCII tuning is required.
 
 ## Raw PWM Test Command
 
@@ -205,8 +242,10 @@ Use this command to verify PWM pins before closed-loop testing.
 
 ## USART1 Feedback
 
-The firmware sends ASCII feedback on `USART1` every 100 ms. Feedback is generated
+Feedback format now follows the active runtime protocol mode. Feedback is generated
 in the FreeRTOS task context, not in the UART interrupt.
+
+When runtime mode is `ASCII`, the firmware sends ASCII feedback every 100 ms.
 
 Two lines are emitted per report cycle:
 
@@ -232,6 +271,9 @@ Use the `MOTOR` line to locate no-PWM faults. If `t` is non-zero but `duty` and
 `ccr` remain zero, the command/control path is not producing output. If `ccr` is
 non-zero but the pin has no waveform, inspect timer PWM initialization and pin
 mapping.
+
+When runtime mode is `MOWEN`, the firmware sends the 12-byte binary feedback frame
+documented in the formal protocol section above.
 
 ## Odometry
 

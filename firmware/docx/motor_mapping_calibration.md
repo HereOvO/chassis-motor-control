@@ -48,6 +48,19 @@ Current firmware source: `Core/Src/motor_driver.c`.
 
 `direction_invert = -1` means the motor driver's logical forward/reverse command is swapped before writing PWM. The encoder feedback sign is also corrected with this same flag in `Core/Src/motor_feedback.c`, so closed-loop feedback follows the logical motor direction.
 
+## Current Tested Default PID Profiles
+
+The source default PID/feedforward parameters were updated from actual bench tuning results on `2026-07-07`.
+
+| Motor ID | Wheel | kp | ki | kd | kv | k_static | output_limit | integral_limit | deadband_rpm |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `0` | Left-front | `60.0` | `8.0` | `0.7` | `28.8` | `6800.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| `1` | Left-rear | `50.0` | `10.0` | `0.5` | `36.74` | `7400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| `2` | Right-rear | `110.0` | `8.0` | `0.5` | `37.0` | `6400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| `3` | Right-front | `110.0` | `8.0` | `0.5` | `42.0` | `5400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+
+These values are the power-up defaults compiled into `Core/Src/motor_control.c`. Online tuning through `MSET` still works on the active RAM profile in `ASCII` mode.
+
 ## Raw PWM Test Results
 
 Test command format:

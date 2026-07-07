@@ -10,13 +10,19 @@ The firmware currently builds and runs the formal binary protocol by default:
 #define CHASSIS_USE_DEBUG_PROTOCOL 0U
 ```
 
+This record applies to the current stripped motor-control firmware only.
+
+- IMU / `MPU6050` support is not part of the active source tree.
+- `PCA9685` servo support is not part of the active source tree.
+- The original generic `SERVO` / `POSE` protocol is preserved only for comparison in `../LEGACY_PROTOCOL_REFERENCE.md`.
+
 Location:
 
 ```text
 Core/Inc/chassis_config.h
 ```
 
-Set the macro to `1U` only when ASCII bring-up/debug commands are needed, then rebuild and reflash.
+Set the macro to `1U` only when ASCII should be the boot-time default after reset. Runtime protocol mode can now be switched without rebuilding.
 
 ## Serial Link
 
@@ -70,6 +76,19 @@ backward 0.5 m/s: AA BB 0A 12 02 0C FE 00 00 00 00 00
 stop:             AA BB 0A 12 02 00 00 00 00 00 00 00
 ```
 
+Dedicated runtime protocol-switch frame:
+
+```text
+FE EF 50 MM CC FD
+MM = 00 -> ASCII
+MM = 01 -> MOWEN
+CC = (0x50 + MM) & 0xFF
+example ASCII switch: FE EF 50 00 50 FD
+example MOWEN switch: FE EF 50 01 51 FD
+```
+
+This switch frame is decoded before normal ASCII or MOWEN traffic. The `FE EF` prefix does not overlap the formal `AA BB ...` header or the `11 00 ...` init frame, and it does not overlap normal printable ASCII command traffic.
+
 Firmware behavior after a valid velocity frame:
 
 ```text
@@ -78,6 +97,19 @@ apply mecanum inverse kinematics
 run per-wheel PID + feedforward
 output PWM through the calibrated motor map
 ```
+
+## Current Default Per-Wheel PID Profiles
+
+The current source default PID/feedforward parameters were updated from actual bench test results on `2026-07-07`.
+
+| Motor ID | Wheel | kp | ki | kd | kv | k_static | output_limit | integral_limit | deadband_rpm |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | Left-front | `60.0` | `8.0` | `0.7` | `28.8` | `6800.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| 1 | Left-rear | `50.0` | `10.0` | `0.5` | `36.74` | `7400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| 2 | Right-rear | `110.0` | `8.0` | `0.5` | `37.0` | `6400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+| 3 | Right-front | `110.0` | `8.0` | `0.5` | `42.0` | `5400.0` | `MOTOR_PWM_ARR` | `300.0` | `1.0` |
+
+These are the compiled startup defaults in `Core/Src/motor_control.c`. Runtime `MSET` writes still override the active RAM profile after switching to `ASCII` mode.
 
 ## STM32 To Upper Computer
 
@@ -149,7 +181,7 @@ Result: formal protocol receive, automatic velocity mode entry, binary feedback 
 
 ## Debug Protocol Is Still Available
 
-The ASCII debug protocol is preserved behind the build macro:
+The ASCII debug protocol is preserved and can be entered at runtime by the sideband switch frame above. The build macro only selects the boot-time default:
 
 ```c
 #define CHASSIS_USE_DEBUG_PROTOCOL 1U

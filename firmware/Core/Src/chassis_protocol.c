@@ -18,6 +18,13 @@
 #define CHASSIS_PROTOCOL_MOWEN_CMD1 0x12U
 #define CHASSIS_PROTOCOL_MOWEN_CMD2 0x02U
 #define CHASSIS_PROTOCOL_MOWEN_INIT0 0x11U
+#define CHASSIS_PROTOCOL_SWITCH_FRAME_LEN 6U
+#define CHASSIS_PROTOCOL_SWITCH_HEAD0 0xFEU
+#define CHASSIS_PROTOCOL_SWITCH_HEAD1 0xEFU
+#define CHASSIS_PROTOCOL_SWITCH_CMD 0x50U
+#define CHASSIS_PROTOCOL_SWITCH_TAIL 0xFDU
+#define CHASSIS_PROTOCOL_SWITCH_MODE_ASCII 0x00U
+#define CHASSIS_PROTOCOL_SWITCH_MODE_MOWEN 0x01U
 
 typedef enum
 {
@@ -32,6 +39,13 @@ typedef enum
     CHASSIS_PROTOCOL_FRAME_ASCII = 1U,
     CHASSIS_PROTOCOL_FRAME_MOWEN = 2U
 } chassis_protocol_frame_kind_t;
+
+typedef enum
+{
+    CHASSIS_PROTOCOL_SPECIAL_PASS = 0U,
+    CHASSIS_PROTOCOL_SPECIAL_CONSUMED = 1U,
+    CHASSIS_PROTOCOL_SPECIAL_REPROCESS = 2U
+} chassis_protocol_special_result_t;
 
 typedef struct
 {
@@ -52,6 +66,8 @@ static uint8_t g_pending_valid = 0U;
 static uint8_t g_mowen_frame[CHASSIS_PROTOCOL_MOWEN_FRAME_LEN];
 static uint8_t g_mowen_index = 0U;
 static uint8_t g_mowen_init_index = 0U;
+static uint8_t g_switch_frame[CHASSIS_PROTOCOL_SWITCH_FRAME_LEN];
+static uint8_t g_switch_index = 0U;
 
 static void chassis_protocol_clear_pending(void)
 {
@@ -263,6 +279,93 @@ static bool chassis_protocol_store_cmd(const chassis_cmd_t *cmd)
     return true;
 }
 
+static bool chassis_protocol_switch_mode_from_byte(uint8_t mode_byte, chassis_protocol_mode_t *mode)
+{
+    if (mode == NULL) {
+        return false;
+    }
+
+    if (mode_byte == CHASSIS_PROTOCOL_SWITCH_MODE_ASCII) {
+        *mode = CHASSIS_PROTOCOL_MODE_ASCII;
+        return true;
+    }
+
+    if (mode_byte == CHASSIS_PROTOCOL_SWITCH_MODE_MOWEN) {
+        *mode = CHASSIS_PROTOCOL_MODE_MOWEN;
+        return true;
+    }
+
+    return false;
+}
+
+static bool chassis_protocol_parse_switch_frame(const uint8_t frame[CHASSIS_PROTOCOL_SWITCH_FRAME_LEN])
+{
+    chassis_protocol_mode_t mode;
+    uint8_t checksum;
+
+    if (frame == NULL) {
+        return false;
+    }
+
+    if (frame[0] != CHASSIS_PROTOCOL_SWITCH_HEAD0 ||
+        frame[1] != CHASSIS_PROTOCOL_SWITCH_HEAD1 ||
+        frame[2] != CHASSIS_PROTOCOL_SWITCH_CMD ||
+        frame[5] != CHASSIS_PROTOCOL_SWITCH_TAIL) {
+        return false;
+    }
+
+    checksum = (uint8_t)(frame[2] + frame[3]);
+    if (frame[4] != checksum) {
+        return false;
+    }
+
+    if (!chassis_protocol_switch_mode_from_byte(frame[3], &mode)) {
+        return false;
+    }
+
+    chassis_protocol_set_mode(mode);
+    return true;
+}
+
+static chassis_protocol_special_result_t chassis_protocol_process_switch_byte(uint8_t byte)
+{
+    if (g_switch_index == 0U) {
+        if (byte == CHASSIS_PROTOCOL_SWITCH_HEAD0) {
+            g_switch_frame[0] = byte;
+            g_switch_index = 1U;
+            return CHASSIS_PROTOCOL_SPECIAL_CONSUMED;
+        }
+
+        return CHASSIS_PROTOCOL_SPECIAL_PASS;
+    }
+
+    if (g_switch_index == 1U) {
+        if (byte == CHASSIS_PROTOCOL_SWITCH_HEAD1) {
+            g_switch_frame[1] = byte;
+            g_switch_index = 2U;
+            return CHASSIS_PROTOCOL_SPECIAL_CONSUMED;
+        }
+
+        if (byte == CHASSIS_PROTOCOL_SWITCH_HEAD0) {
+            g_switch_frame[0] = byte;
+            g_switch_index = 1U;
+            return CHASSIS_PROTOCOL_SPECIAL_CONSUMED;
+        }
+
+        g_switch_index = 0U;
+        return CHASSIS_PROTOCOL_SPECIAL_REPROCESS;
+    }
+
+    g_switch_frame[g_switch_index++] = byte;
+    if (g_switch_index < CHASSIS_PROTOCOL_SWITCH_FRAME_LEN) {
+        return CHASSIS_PROTOCOL_SPECIAL_CONSUMED;
+    }
+
+    g_switch_index = 0U;
+    (void)chassis_protocol_parse_switch_frame(g_switch_frame);
+    return CHASSIS_PROTOCOL_SPECIAL_CONSUMED;
+}
+
 static bool chassis_protocol_parse_ascii_line(char *line)
 {
     char *cursor;
@@ -465,6 +568,13 @@ static void chassis_protocol_parse_mowen_stream(void)
     uint8_t byte;
 
     while (chassis_protocol_ring_pop(&byte) != 0U) {
+        chassis_protocol_special_result_t special_result;
+
+        special_result = chassis_protocol_process_switch_byte(byte);
+        if (special_result == CHASSIS_PROTOCOL_SPECIAL_CONSUMED) {
+            continue;
+        }
+
         if (g_protocol_mode == CHASSIS_PROTOCOL_MODE_ASCII) {
             if (byte == '\r' || byte == '\n') {
                 if (g_ascii_length > 0U) {
@@ -558,6 +668,7 @@ void chassis_protocol_init(UART_HandleTypeDef *huart)
     g_ascii_line_ready = 0U;
     g_mowen_index = 0U;
     g_mowen_init_index = 0U;
+    g_switch_index = 0U;
     chassis_protocol_ring_reset();
     chassis_protocol_clear_pending();
 }
@@ -579,6 +690,7 @@ void chassis_protocol_set_mode(chassis_protocol_mode_t mode)
     g_ascii_line_ready = 0U;
     g_mowen_index = 0U;
     g_mowen_init_index = 0U;
+    g_switch_index = 0U;
     chassis_protocol_clear_pending();
     chassis_protocol_ring_reset();
 }
@@ -641,6 +753,7 @@ void chassis_protocol_reset(void)
     g_ascii_line_ready = 0U;
     g_mowen_index = 0U;
     g_mowen_init_index = 0U;
+    g_switch_index = 0U;
     chassis_protocol_ring_reset();
     chassis_protocol_clear_pending();
 }
