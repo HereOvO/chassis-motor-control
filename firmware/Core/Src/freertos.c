@@ -124,6 +124,8 @@ static void ChassisControlTask(void *argument)
       (void)chassis_mode_apply_cmd(&cmd);
     }
 
+    chassis_mode_watchdog_update();
+
     ++feedback_elapsed_ms;
     ++pid_elapsed_ms;
     ++report_elapsed_ms;

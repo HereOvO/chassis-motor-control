@@ -34,6 +34,8 @@ ASCII switch example: FE EF 50 00 50 FD
 MOWEN switch example: FE EF 50 01 51 FD
 ```
 
+The switch prefix is recognized only between frames. A `0xFE` byte inside an active MOWEN payload remains ordinary signed velocity data; for example, `D4 FE` is decoded as little-endian `int16(-300)`.
+
 COM16 formal protocol test command:
 
 ```powershell
@@ -98,6 +100,8 @@ MOWEN production input is a 12-byte binary frame:
 [10] wz high byte
 [11] 0x00
 ```
+
+Always transmit the complete 12-byte frame, including byte 11. Motion commands must also be refreshed before the `200 ms` firmware watchdog expires. The current `chassis_bringup_test.py` refreshes velocity and PWM-test commands every `50 ms`; when refresh stops, the firmware automatically clears targets and PWM outputs.
 
 MOWEN/formal production feedback is also 12 bytes:
 

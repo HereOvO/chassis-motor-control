@@ -570,9 +570,12 @@ static void chassis_protocol_parse_mowen_stream(void)
     while (chassis_protocol_ring_pop(&byte) != 0U) {
         chassis_protocol_special_result_t special_result;
 
-        special_result = chassis_protocol_process_switch_byte(byte);
-        if (special_result == CHASSIS_PROTOCOL_SPECIAL_CONSUMED) {
-            continue;
+        special_result = CHASSIS_PROTOCOL_SPECIAL_PASS;
+        if (g_switch_index > 0U || g_parse_state == CHASSIS_PROTOCOL_PARSE_IDLE) {
+            special_result = chassis_protocol_process_switch_byte(byte);
+            if (special_result == CHASSIS_PROTOCOL_SPECIAL_CONSUMED) {
+                continue;
+            }
         }
 
         if (g_protocol_mode == CHASSIS_PROTOCOL_MODE_ASCII) {

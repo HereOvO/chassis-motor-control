@@ -43,6 +43,7 @@ except ImportError as exc:
 
 
 DEFAULT_BAUD = 115200
+COMMAND_REFRESH_PERIOD_S = 0.05
 MOTOR_LABELS = {
     0: "left-front",
     1: "left-rear",
@@ -83,9 +84,10 @@ class VelocityStep:
     duration_s: float
 
 
-def send_line(port: serial.Serial, line: str, delay_s: float = 0.05) -> None:
+def send_line(port: serial.Serial, line: str, delay_s: float = 0.05, announce: bool = True) -> None:
     command = line.strip()
-    print(f">> {command}")
+    if announce:
+        print(f">> {command}")
     port.write((command + "\r\n").encode("ascii"))
     port.flush()
     if delay_s > 0.0:
@@ -187,21 +189,50 @@ def build_mowen_frame(vx: float, vy: float, wz: float) -> bytes:
     return b"\xAA\xBB\x0A\x12\x02" + struct.pack("<hhhB", clamp_i16_scaled(vx), clamp_i16_scaled(vy), clamp_i16_scaled(wz), 0)
 
 
-def send_mowen_frame(port: serial.Serial, step: VelocityStep, delay_s: float = 0.05) -> None:
+def send_mowen_frame(port: serial.Serial, step: VelocityStep, delay_s: float = 0.05, announce: bool = True) -> None:
     frame = build_mowen_frame(step.vx, step.vy, step.wz)
-    print(f">> MOWEN {frame.hex(' ').upper()}  VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}")
+    if announce:
+        print(f">> MOWEN {frame.hex(' ').upper()}  VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}")
     port.write(frame)
     port.flush()
     if delay_s > 0.0:
         time.sleep(delay_s)
 
+
+def run_periodic_payload(
+    port: serial.Serial,
+    payload: bytes,
+    label: str,
+    duration_s: float,
+    monitor: bool,
+) -> None:
+    print(label)
+    deadline = time.monotonic() + max(0.0, duration_s)
+    while True:
+        port.write(payload)
+        port.flush()
+        remaining = deadline - time.monotonic()
+        if remaining <= 0.0:
+            break
+        wait_s = min(COMMAND_REFRESH_PERIOD_S, remaining)
+        if monitor:
+            read_feedback(port, wait_s)
+        else:
+            time.sleep(wait_s)
+
 def run_velocity(port: serial.Serial, args: argparse.Namespace) -> None:
     send_commands(port, ("ASCII", "ZERO", "PROFILE,1", "MODE,1", "ENABLE,1"))
     for step in build_steps(args):
-        send_line(port, f"VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}")
-        read_feedback(port, step.duration_s if args.monitor else step.duration_s)
+        command = f"VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f}"
+        run_periodic_payload(
+            port,
+            (command + "\r\n").encode("ascii"),
+            f">> {command} (refresh every {COMMAND_REFRESH_PERIOD_S * 1000:.0f} ms)",
+            step.duration_s,
+            args.monitor,
+        )
     if args.no_stop:
-        print("Leaving velocity command active because --no-stop was set.")
+        print("No explicit stop sent; the firmware watchdog will stop motion after command refresh ends.")
     else:
         stop_chassis(port)
 
@@ -209,10 +240,17 @@ def run_velocity(port: serial.Serial, args: argparse.Namespace) -> None:
 
 def run_mowen(port: serial.Serial, args: argparse.Namespace) -> None:
     for step in build_steps(args):
-        send_mowen_frame(port, step)
-        read_feedback(port, step.duration_s if args.monitor else step.duration_s)
+        frame = build_mowen_frame(step.vx, step.vy, step.wz)
+        run_periodic_payload(
+            port,
+            frame,
+            f">> MOWEN {frame.hex(' ').upper()}  VEL,{step.vx:.3f},{step.vy:.3f},{step.wz:.3f} "
+            f"(refresh every {COMMAND_REFRESH_PERIOD_S * 1000:.0f} ms)",
+            step.duration_s,
+            args.monitor,
+        )
     if args.no_stop:
-        print("Leaving MOWEN velocity command active because --no-stop was set.")
+        print("No explicit stop sent; the firmware watchdog will stop motion after command refresh ends.")
     else:
         send_mowen_frame(port, VelocityStep(0.0, 0.0, 0.0, 0.0))
 
@@ -228,10 +266,16 @@ def run_pwmtest(port: serial.Serial, args: argparse.Namespace) -> None:
 
     send_line(port, "ASCII")
     print(f"Testing motor {args.motor}: {MOTOR_LABELS[args.motor]}")
-    send_line(port, f"PWMTEST,{args.motor},{args.direction},{args.duty:.3f}")
-    read_feedback(port, args.duration if args.monitor else args.duration)
+    command = f"PWMTEST,{args.motor},{args.direction},{args.duty:.3f}"
+    run_periodic_payload(
+        port,
+        (command + "\r\n").encode("ascii"),
+        f">> {command} (refresh every {COMMAND_REFRESH_PERIOD_S * 1000:.0f} ms)",
+        args.duration,
+        args.monitor,
+    )
     if args.no_stop:
-        print("Leaving PWMTEST active because --no-stop was set.")
+        print("No explicit stop sent; the firmware watchdog will stop PWM after command refresh ends.")
     else:
         stop_chassis(port)
 
@@ -253,7 +297,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--mode", choices=("velocity", "mowen", "pwmtest", "stop", "listen"), default="velocity")
     parser.add_argument("--duration", type=float, default=1.0, help="test/listen duration in seconds")
     parser.add_argument("--monitor", action="store_true", help="print firmware feedback while running")
-    parser.add_argument("--no-stop", action="store_true", help="leave the command active instead of stopping at the end")
+    parser.add_argument("--no-stop", action="store_true", help="skip the explicit stop frame; the 200 ms firmware watchdog still stops motion")
     parser.add_argument("--dry-run", action="store_true", help="print intended action without opening serial port")
 
     parser.add_argument("--pattern", choices=("forward", "backward", "left", "right", "strafe", "turn-left", "turn-right", "rotate", "square"), default="forward")
@@ -296,6 +340,8 @@ def main(argv: list[str]) -> int:
         try:
             if args.mode == "velocity":
                 run_velocity(port, args)
+            elif args.mode == "mowen":
+                run_mowen(port, args)
             elif args.mode == "pwmtest":
                 run_pwmtest(port, args)
             elif args.mode == "stop":

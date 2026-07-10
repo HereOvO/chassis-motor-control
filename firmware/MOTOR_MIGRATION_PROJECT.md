@@ -128,7 +128,7 @@ example ASCII switch: FE EF 50 00 50 FD
 example MOWEN switch: FE EF 50 01 51 FD
 ```
 
-This frame is handled before normal ASCII or MOWEN parsing. Its `FE EF` prefix is outside the valid MOWEN frame headers and outside normal printable ASCII command traffic, so it does not consume existing command space in either protocol.
+The switch detector starts only at an idle protocol boundary. Once a MOWEN frame has started, every payload byte is preserved as frame data, including `0xFE` in a negative signed velocity value. This prevents negative values such as `D4 FE` from being mistaken for the start of a switch frame.
 
 Modes:
 
@@ -167,6 +167,8 @@ Z = int16(wz * 1000), little-endian
 ```
 
 The initialization frame resets odometry and stops the chassis. A valid velocity frame automatically enters velocity mode and runs mecanum inverse kinematics.
+
+The command frame remains exactly 12 bytes; byte 11 is the reserved trailing `0x00` and must be transmitted. Velocity and raw-PWM motion commands refresh a `200 ms` firmware watchdog. Send active motion commands every `20-100 ms`. If command refresh stops, the firmware enters stop mode, clears all wheel targets, resets the control outputs, and drives all PWM compare registers to zero.
 
 Feedback frame:
 

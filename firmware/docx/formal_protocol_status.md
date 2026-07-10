@@ -68,6 +68,19 @@ Y = int16(linear.y  * 1000), little-endian
 Z = int16(angular.z * 1000), little-endian
 ```
 
+The frame must contain all 12 bytes, including the reserved trailing `00`. Runtime switch-frame detection only starts at an idle parser boundary. Payload bytes inside an active MOWEN frame are never intercepted, so values such as `D4 FE` correctly decode as signed `-300` rather than losing the `FE` byte.
+
+### Motion Command Watchdog
+
+Velocity and raw-PWM commands arm and refresh a `200 ms` communication watchdog. The upper computer should transmit the active command every `20-100 ms`. If no valid motion command arrives before the timeout, firmware behavior is:
+
+```text
+enter stop mode
+clear all four wheel targets
+reset PID state
+set all motor PWM compare registers to zero
+```
+
 Examples:
 
 ```text

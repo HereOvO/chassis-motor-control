@@ -251,7 +251,7 @@ I (../Core/Inc/tim.h)(0x6A46CB05)
 I (../Core/Inc/usart.h)(0x6A47B891)
 I (../Core/Inc/gpio.h)(0x69708722)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x5475F300)
-I (../Core/Inc/chassis_mode.h)(0x6A47F9E6)
+I (../Core/Inc/chassis_mode.h)(0x6A50B74B)
 I (../Core/Inc/chassis_config.h)(0x6A4BE7B4)
 I (D:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x5475F300)
 I (../Core/Inc/Motor.h)(0x6A478F8B)
@@ -280,7 +280,7 @@ I (D:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x5475F300)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
 I (D:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x5475F300)
 I (../Core/Inc/velocity_units.h)(0x6A47919F)
-F (../Core/Src/chassis_protocol.c)(0x6A4BE7B4)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_wheeled_leg_robot_f407-ID:\Keil_v5\ARM\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil_v5\ARM\Pack\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o wheeled_leg_robot_f407\chassis_protocol.o --omf_browse wheeled_leg_robot_f407\chassis_protocol.crf --depend wheeled_leg_robot_f407\chassis_protocol.d)
+F (../Core/Src/chassis_protocol.c)(0x6A50B9A4)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_wheeled_leg_robot_f407-ID:\Keil_v5\ARM\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil_v5\ARM\Pack\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o wheeled_leg_robot_f407\chassis_protocol.o --omf_browse wheeled_leg_robot_f407\chassis_protocol.crf --depend wheeled_leg_robot_f407\chassis_protocol.d)
 I (../Core/Inc/chassis_protocol.h)(0x6A47B555)
 I (../Core/Inc/chassis_config.h)(0x6A4BE7B4)
 I (D:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x5475F300)
@@ -327,7 +327,7 @@ I (../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h)(0x69708722
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/task.h)(0x69708722)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/list.h)(0x69708722)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x69708722)
-I (../Core/Inc/chassis_mode.h)(0x6A47F9E6)
+I (../Core/Inc/chassis_mode.h)(0x6A50B74B)
 I (../Core/Inc/Motor.h)(0x6A478F8B)
 I (../Core/Inc/motor_runtime.h)(0x6A47EC0E)
 I (../Core/Inc/motor_driver.h)(0x6A47EC6A)
@@ -338,8 +338,8 @@ I (../Core/Inc/runtime_tune.h)(0x6A47919F)
 I (D:\Keil_v5\ARM\ARMCC\include\ctype.h)(0x5475F300)
 I (D:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
 I (D:\Keil_v5\ARM\ARMCC\include\string.h)(0x5475F300)
-F (../Core/Src/chassis_mode.c)(0x6A482C21)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_wheeled_leg_robot_f407-ID:\Keil_v5\ARM\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil_v5\ARM\Pack\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o wheeled_leg_robot_f407\chassis_mode.o --omf_browse wheeled_leg_robot_f407\chassis_mode.crf --depend wheeled_leg_robot_f407\chassis_mode.d)
-I (../Core/Inc/chassis_mode.h)(0x6A47F9E6)
+F (../Core/Src/chassis_mode.c)(0x6A50B782)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_wheeled_leg_robot_f407-ID:\Keil_v5\ARM\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil_v5\ARM\Pack\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o wheeled_leg_robot_f407\chassis_mode.o --omf_browse wheeled_leg_robot_f407\chassis_mode.crf --depend wheeled_leg_robot_f407\chassis_mode.d)
+I (../Core/Inc/chassis_mode.h)(0x6A50B74B)
 I (../Core/Inc/chassis_config.h)(0x6A4BE7B4)
 I (D:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x5475F300)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
@@ -425,7 +425,7 @@ I (../Core/Inc/chassis_feedback.h)(0x6A47ECA4)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
 I (../Core/Inc/chassis_config.h)(0x6A4BE7B4)
 I (D:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x5475F300)
-I (../Core/Inc/chassis_mode.h)(0x6A47F9E6)
+I (../Core/Inc/chassis_mode.h)(0x6A50B74B)
 I (../Core/Inc/Motor.h)(0x6A478F8B)
 I (../Core/Inc/motor_runtime.h)(0x6A47EC0E)
 I (../Core/Inc/main.h)(0x6A474B60)
@@ -500,7 +500,7 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h)(0x69708722)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h)(0x69708722)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h)(0x69708722)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x69708722)
-F (../Core/Src/freertos.c)(0x6A47FA1E)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_wheeled_leg_robot_f407-ID:\Keil_v5\ARM\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil_v5\ARM\Pack\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o wheeled_leg_robot_f407\freertos.o --omf_browse wheeled_leg_robot_f407\freertos.crf --depend wheeled_leg_robot_f407\freertos.d)
+F (../Core/Src/freertos.c)(0x6A50B782)(--c99 -c --cpu Cortex-M4.fp.sp -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_wheeled_leg_robot_f407-ID:\Keil_v5\ARM\Pack\ARM\CMSIS\5.9.0\CMSIS\Core\Include-ID:\Keil_v5\ARM\Pack\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="539" -D_RTE_ -DSTM32F407xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F407xx-o wheeled_leg_robot_f407\freertos.o --omf_browse wheeled_leg_robot_f407\freertos.crf --depend wheeled_leg_robot_f407\freertos.d)
 I (../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h)(0x69708722)
 I (D:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x5475F300)
 I (D:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5475F300)
@@ -543,7 +543,7 @@ I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h)(0x69708722)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h)(0x69708722)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h)(0x69708722)
 I (../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h)(0x69708722)
-I (../Core/Inc/chassis_mode.h)(0x6A47F9E6)
+I (../Core/Inc/chassis_mode.h)(0x6A50B74B)
 I (../Core/Inc/chassis_config.h)(0x6A4BE7B4)
 I (D:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x5475F300)
 I (../Core/Inc/Motor.h)(0x6A478F8B)

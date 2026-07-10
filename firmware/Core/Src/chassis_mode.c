@@ -1,5 +1,6 @@
 #include "chassis_mode.h"
 
+#include "main.h"
 #include "chassis_kinematics.h"
 #include "chassis_odometry.h"
 #include "motor_driver.h"
@@ -9,6 +10,9 @@
 static chassis_mode_t g_active_mode = CHASSIS_MODE_STOP;
 static chassis_profile_id_t g_active_profile = CHASSIS_PROFILE_MECANUM;
 static uint8_t g_raw_pwm_active = 0U;
+static uint8_t g_motion_watchdog_armed = 0U;
+static uint32_t g_motion_watchdog_last_refresh_ms = 0U;
+static uint32_t g_motion_watchdog_trip_count = 0U;
 
 static MotorDirection_t chassis_mode_raw_direction_to_motor(int8_t direction)
 {
@@ -80,12 +84,51 @@ static bool chassis_mode_motion_enabled(void)
     return (g_active_mode == CHASSIS_MODE_VELOCITY) || (g_active_mode == CHASSIS_MODE_TUNE);
 }
 
+static void chassis_mode_watchdog_refresh(void)
+{
+    g_motion_watchdog_last_refresh_ms = HAL_GetTick();
+    g_motion_watchdog_armed = 1U;
+}
+
+static void chassis_mode_watchdog_disarm(void)
+{
+    g_motion_watchdog_last_refresh_ms = HAL_GetTick();
+    g_motion_watchdog_armed = 0U;
+}
+
+void chassis_mode_watchdog_update(void)
+{
+    uint32_t now_ms;
+
+    if (g_motion_watchdog_armed == 0U) {
+        return;
+    }
+
+    if (!chassis_mode_motion_enabled()) {
+        chassis_mode_watchdog_disarm();
+        return;
+    }
+
+    now_ms = HAL_GetTick();
+    if ((uint32_t)(now_ms - g_motion_watchdog_last_refresh_ms) < CHASSIS_MOTION_COMMAND_TIMEOUT_MS) {
+        return;
+    }
+
+    ++g_motion_watchdog_trip_count;
+    g_active_mode = CHASSIS_MODE_STOP;
+    g_raw_pwm_active = 0U;
+    chassis_mode_watchdog_disarm();
+    chassis_mode_stop_motion();
+}
+
 void chassis_mode_init(void)
 {
     MotorControlCore_Init();
     runtime_tune_init();
     g_active_profile = runtime_tune_get_state()->active_profile_id;
     g_active_mode = CHASSIS_MODE_STOP;
+    g_motion_watchdog_trip_count = 0U;
+    chassis_mode_watchdog_disarm();
     MotorDriver_ResetProfile();
     chassis_odometry_reset();
     chassis_mode_stop_motion();
@@ -105,6 +148,7 @@ bool chassis_mode_apply_profile(chassis_profile_id_t profile_id)
     g_active_mode = CHASSIS_MODE_STOP;
     MotorDriver_ResetProfile();
     chassis_odometry_reset();
+    chassis_mode_watchdog_disarm();
     chassis_mode_stop_motion();
     return true;
 }
@@ -116,6 +160,8 @@ void chassis_mode_request_integrator_reset(void)
 
 void chassis_mode_request_output_zero(void)
 {
+    g_active_mode = CHASSIS_MODE_STOP;
+    chassis_mode_watchdog_disarm();
     chassis_mode_stop_motion();
 }
 
@@ -138,11 +184,15 @@ static bool chassis_mode_apply_raw_pwm(const chassis_cmd_t *cmd)
     g_active_mode = CHASSIS_MODE_TUNE;
 
     if (direction == MOTOR_DIRECTION_STOP || duty_norm <= 0.0f) {
+        g_active_mode = CHASSIS_MODE_STOP;
+        g_raw_pwm_active = 0U;
+        chassis_mode_watchdog_disarm();
         MotorDriver_Stop(motor_id);
         return true;
     }
 
     MotorDriver_SetOutput(motor_id, direction, duty_norm);
+    chassis_mode_watchdog_refresh();
     return true;
 }
 
@@ -171,8 +221,10 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         g_active_mode = local_cmd.mode;
         g_raw_pwm_active = 0U;
         if (g_active_mode == CHASSIS_MODE_STOP || g_active_mode == CHASSIS_MODE_FAULT) {
+            chassis_mode_watchdog_disarm();
             chassis_mode_stop_motion();
         } else {
+            chassis_mode_watchdog_refresh();
             chassis_mode_reset_integrators();
         }
         return true;
@@ -202,6 +254,7 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         }
         g_active_mode = CHASSIS_MODE_STOP;
         chassis_odometry_reset();
+        chassis_mode_watchdog_disarm();
         chassis_mode_stop_motion();
         return true;
 
@@ -209,10 +262,12 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         if (local_cmd.enable == 0U) {
             g_active_mode = CHASSIS_MODE_STOP;
             g_raw_pwm_active = 0U;
+            chassis_mode_watchdog_disarm();
             chassis_mode_stop_motion();
         } else {
             g_active_mode = CHASSIS_MODE_VELOCITY;
             g_raw_pwm_active = 0U;
+            chassis_mode_watchdog_refresh();
             chassis_mode_reset_integrators();
         }
         return true;
@@ -221,6 +276,7 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         g_active_mode = CHASSIS_MODE_STOP;
         g_raw_pwm_active = 0U;
         chassis_odometry_reset();
+        chassis_mode_watchdog_disarm();
         chassis_mode_stop_motion();
         return true;
 
@@ -228,6 +284,7 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         g_active_mode = CHASSIS_MODE_STOP;
         g_raw_pwm_active = 0U;
         chassis_odometry_reset();
+        chassis_mode_watchdog_disarm();
         chassis_mode_stop_motion();
         return true;
 
@@ -241,6 +298,7 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         }
         if (!chassis_mode_motion_enabled()) {
             chassis_mode_clear_targets();
+            chassis_mode_watchdog_disarm();
             chassis_mode_stop_motion();
             chassis_mode_reset_integrators();
             return true;
@@ -249,6 +307,7 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         chassis_mode_clamp_velocity(profile, &local_cmd);
         chassis_kinematics_inverse(profile, &local_cmd, wheel_speed_rpm);
         MotorControlCore_SetTargets(wheel_speed_rpm);
+        chassis_mode_watchdog_refresh();
         return true;
 
     case CHASSIS_CMD_NONE:
