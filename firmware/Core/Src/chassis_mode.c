@@ -13,6 +13,10 @@ static uint8_t g_raw_pwm_active = 0U;
 static uint8_t g_motion_watchdog_armed = 0U;
 static uint32_t g_motion_watchdog_last_refresh_ms = 0U;
 static uint32_t g_motion_watchdog_trip_count = 0U;
+static chassis_cmd_t g_last_velocity_cmd;
+static uint8_t g_last_velocity_cmd_valid = 0U;
+
+static bool chassis_mode_motion_enabled(void);
 
 static MotorDirection_t chassis_mode_raw_direction_to_motor(int8_t direction)
 {
@@ -39,6 +43,7 @@ static float chassis_mode_clamp_duty(float duty_norm)
 static void chassis_mode_stop_motion(void)
 {
     g_raw_pwm_active = 0U;
+    g_last_velocity_cmd_valid = 0U;
     MotorControlCore_ResetAll();
 }
 
@@ -77,6 +82,27 @@ static void chassis_mode_clamp_velocity(const chassis_profile_t *profile, chassi
     } else if (cmd->wz_radps < -profile->max_angular_speed_radps) {
         cmd->wz_radps = -profile->max_angular_speed_radps;
     }
+}
+
+static void chassis_mode_reapply_last_velocity(void)
+{
+    const chassis_profile_t *profile;
+    chassis_cmd_t cmd;
+    float wheel_speed_rpm[CHASSIS_WHEEL_COUNT];
+
+    if (g_last_velocity_cmd_valid == 0U || !chassis_mode_motion_enabled()) {
+        return;
+    }
+
+    profile = runtime_tune_get_active_profile();
+    if (profile == NULL) {
+        return;
+    }
+
+    cmd = g_last_velocity_cmd;
+    chassis_mode_clamp_velocity(profile, &cmd);
+    chassis_kinematics_inverse(profile, &cmd, wheel_speed_rpm);
+    MotorControlCore_SetTargets(wheel_speed_rpm);
 }
 
 static bool chassis_mode_motion_enabled(void)
@@ -243,6 +269,7 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
             return false;
         }
         chassis_mode_reset_integrators();
+        chassis_mode_reapply_last_velocity();
         return true;
 
     case CHASSIS_CMD_PARAM_COMMIT:
@@ -307,6 +334,8 @@ bool chassis_mode_apply_cmd(const chassis_cmd_t *cmd)
         chassis_mode_clamp_velocity(profile, &local_cmd);
         chassis_kinematics_inverse(profile, &local_cmd, wheel_speed_rpm);
         MotorControlCore_SetTargets(wheel_speed_rpm);
+        g_last_velocity_cmd = local_cmd;
+        g_last_velocity_cmd_valid = 1U;
         chassis_mode_watchdog_refresh();
         return true;
 

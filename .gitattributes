@@ -1,2 +1,14 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Keep contributor-only and generated firmware files out of source archives.
+AGENTS.md export-ignore
+firmware/MDK-ARM/**/*.crf export-ignore
+firmware/MDK-ARM/**/*.d export-ignore
+firmware/MDK-ARM/**/*.dep export-ignore
+firmware/MDK-ARM/**/*.axf export-ignore
+firmware/MDK-ARM/**/*.hex export-ignore
+firmware/MDK-ARM/**/*.htm export-ignore
+firmware/MDK-ARM/**/*.lst export-ignore
+firmware/MDK-ARM/**/*.log export-ignore
+firmware/MDK-ARM/**/*.map export-ignore

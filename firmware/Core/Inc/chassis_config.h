@@ -45,7 +45,7 @@ extern "C" {
 #define CHASSIS_PWM_LIMIT_MIN 1U
 #define CHASSIS_PWM_LIMIT_MAX 65535U
 
-#define CHASSIS_DEFAULT_WHEEL_RADIUS_M 0.0255f
+#define CHASSIS_DEFAULT_WHEEL_RADIUS_M 0.0350f
 #define CHASSIS_DEFAULT_DIFF_TRACK_WIDTH_M 0.250f
 #define CHASSIS_DEFAULT_MECHANUM_TRACK_WIDTH_M 0.250f
 #define CHASSIS_DEFAULT_MECHANUM_WHEEL_BASE_M 0.220f
@@ -187,11 +187,3 @@ bool chassis_config_validate_profile(const chassis_profile_t *profile);
 #endif
 
 #endif /* CHASSIS_CONFIG_H */
-
-
-
-
-
-
-
-

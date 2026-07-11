@@ -8,6 +8,7 @@
 #include "motor_driver.h"
 #include "motor_feedback.h"
 #include "usart.h"
+#include "runtime_tune.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -66,8 +67,9 @@ static void chassis_feedback_put_i16_le(uint8_t *dst, int16_t value)
 
 static void chassis_feedback_report_ascii(void)
 {
-    char line[192];
+    char line[256];
     chassis_odometry_t odom;
+    const runtime_tune_state_t *tune;
     Motor_Status_t status[MOTOR_COUNT];
     MotorDriverOutput_t output[MOTOR_COUNT];
     float target[MOTOR_COUNT];
@@ -75,6 +77,7 @@ static void chassis_feedback_report_ascii(void)
     uint8_t i;
 
     odom = chassis_odometry_get();
+    tune = runtime_tune_get_state();
     for (i = 0U; i < MOTOR_COUNT; ++i) {
         status[i] = MotorFeedback_GetStatus(i);
         output[i] = MotorDriver_GetOutput(i);
@@ -96,6 +99,31 @@ static void chassis_feedback_report_ascii(void)
                    (unsigned long)odom.update_count);
     if (len > 0) {
         chassis_feedback_send_text(line);
+    }
+
+    if (tune != NULL) {
+        len = snprintf(line,
+                       sizeof(line),
+                       "TUNE,profile=%u,dirty=%u,r=%.5f,tw=%.5f,wb=%.5f,red=%.3f,ppr=%u,s0=%d,s1=%d,s2=%d,s3=%d,vmax=%.3f,wmax=%.3f,alam=%.3f,aang=%.3f,pwm=%u\r\n",
+                       (unsigned int)tune->active_profile_id,
+                       (unsigned int)tune->active_profile_dirty,
+                       tune->active_profile.wheel_radius_m,
+                       tune->active_profile.track_width_m,
+                       tune->active_profile.wheel_base_m,
+                       tune->active_profile.reduction_ratio,
+                       (unsigned int)tune->active_profile.encoder_ppr,
+                       (int)tune->active_profile.direction_sign[0],
+                       (int)tune->active_profile.direction_sign[1],
+                       (int)tune->active_profile.direction_sign[2],
+                       (int)tune->active_profile.direction_sign[3],
+                       tune->active_profile.max_linear_speed_mps,
+                       tune->active_profile.max_angular_speed_radps,
+                       tune->active_profile.max_linear_accel_mps2,
+                       tune->active_profile.max_angular_accel_radps2,
+                       (unsigned int)tune->active_profile.pwm_limit);
+        if (len > 0) {
+            chassis_feedback_send_text(line);
+        }
     }
 
     len = snprintf(line,

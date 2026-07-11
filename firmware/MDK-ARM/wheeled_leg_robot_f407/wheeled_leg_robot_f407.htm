@@ -3,9 +3,9 @@
 <title>Static Call Graph - [wheeled_leg_robot_f407\wheeled_leg_robot_f407.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image wheeled_leg_robot_f407\wheeled_leg_robot_f407.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Fri Jul 10 17:22:11 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050106: Last Updated: Sat Jul 11 19:27:45 2026
 <BR><P>
-<H3>Maximum Stack Usage =       1088 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =       1136 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 ChassisControlTask &rArr; chassis_feedback_report &rArr; chassis_feedback_report_ascii &rArr; MotorFeedback_GetStatus &rArr; osMutexAcquire &rArr; xQueueTakeMutexRecursive &rArr; xQueueSemaphoreTake &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 <P>
@@ -673,7 +673,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = strlen
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Error_Handler
-<LI><a href="#[154]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_send_text
+<LI><a href="#[155]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_send_text
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_protocol_parse_ascii_line
 </UL>
 
@@ -707,9 +707,9 @@ Global Symbols
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_protocol_poll
 <LI><a href="#[175]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_protocol_store_cmd
-<LI><a href="#[163]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
-<LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
-<LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
+<LI><a href="#[167]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
+<LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<LI><a href="#[166]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
 <LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_refresh_state
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_memcpy
 </UL>
@@ -743,7 +743,7 @@ Global Symbols
 <LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_MspInit
 <LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_TIM_MspPostInit
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_Encoder_MspInit
-<LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
+<LI><a href="#[168]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
 <LI><a href="#[179]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_protocol_parse_mowen_stream
 <LI><a href="#[178]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_protocol_parse_mowen_frame
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_protocol_parse_ascii_line
@@ -1156,8 +1156,8 @@ Global Symbols
 <LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
 <LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_update
-<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_refresh
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
+<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_refresh
+<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_DMA_Abort
 <LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 </UL>
@@ -1475,7 +1475,7 @@ Global Symbols
 <LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Error_Handler
-<LI><a href="#[154]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_send_text
+<LI><a href="#[155]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_send_text
 <LI><a href="#[14c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_mowen
 </UL>
 
@@ -1615,11 +1615,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisControlTask
 </UL>
 
-<P><STRONG><a name="[155]"></a>MotorControlCore_GetProfile</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, motor_control.o(i.MotorControlCore_GetProfile))
+<P><STRONG><a name="[156]"></a>MotorControlCore_GetProfile</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, motor_control.o(i.MotorControlCore_GetProfile))
 <BR><BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_ascii
 </UL>
 
-<P><STRONG><a name="[150]"></a>MotorControlCore_GetTarget</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, motor_control.o(i.MotorControlCore_GetTarget))
+<P><STRONG><a name="[151]"></a>MotorControlCore_GetTarget</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, motor_control.o(i.MotorControlCore_GetTarget))
 <BR><BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_ascii
 </UL>
 
@@ -1632,7 +1632,7 @@ Global Symbols
 <LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;motor_control_reset_state
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<BR>[Called By]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
 </UL>
 
 <P><STRONG><a name="[124]"></a>MotorControlCore_Reset</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, motor_control.o(i.MotorControlCore_Reset))
@@ -1649,8 +1649,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[124]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_Reset
 </UL>
-<BR>[Called By]<UL><LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
-<LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
+<BR>[Called By]<UL><LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
+<LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
 </UL>
 
 <P><STRONG><a name="[127]"></a>MotorControlCore_ResetIntegrator</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, motor_control.o(i.MotorControlCore_ResetIntegrator))
@@ -1686,7 +1686,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[129]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_SetParam
 </UL>
 
-<P><STRONG><a name="[168]"></a>MotorControlCore_SetTargets</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, motor_control.o(i.MotorControlCore_SetTargets))
+<P><STRONG><a name="[165]"></a>MotorControlCore_SetTargets</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, motor_control.o(i.MotorControlCore_SetTargets))
 <BR><BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
@@ -1694,7 +1694,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_SetOutput
 </UL>
 
-<P><STRONG><a name="[14f]"></a>MotorDriver_GetOutput</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, motor_driver.o(i.MotorDriver_GetOutput))
+<P><STRONG><a name="[150]"></a>MotorDriver_GetOutput</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, motor_driver.o(i.MotorDriver_GetOutput))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = MotorDriver_GetOutput
 </UL>
 <BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_ascii
@@ -1710,11 +1710,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_Init
 </UL>
 
-<P><STRONG><a name="[16a]"></a>MotorDriver_ResetProfile</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, motor_driver.o(i.MotorDriver_ResetProfile))
+<P><STRONG><a name="[16b]"></a>MotorDriver_ResetProfile</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, motor_driver.o(i.MotorDriver_ResetProfile))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = MotorDriver_ResetProfile
 </UL>
-<BR>[Called By]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
+<BR>[Called By]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
 </UL>
 
 <P><STRONG><a name="[d0]"></a>MotorDriver_SetOutput</STRONG> (Thumb, 470 bytes, Stack size 40 bytes, motor_driver.o(i.MotorDriver_SetOutput))
@@ -1726,7 +1726,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_Stop
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisControlTask
-<LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
+<LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
 </UL>
 
 <P><STRONG><a name="[125]"></a>MotorDriver_Stop</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, motor_driver.o(i.MotorDriver_Stop))
@@ -1736,7 +1736,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[123]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_StopAll
 <LI><a href="#[124]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_Reset
-<LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
+<LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
 </UL>
 
 <P><STRONG><a name="[123]"></a>MotorDriver_StopAll</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, motor_driver.o(i.MotorDriver_StopAll))
@@ -1990,24 +1990,24 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[1b8]"></a>chassis_config_default_profile_id</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, chassis_config.o(i.chassis_config_default_profile_id))
-<BR><BR>[Called By]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<BR><BR>[Called By]<UL><LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
 <LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_refresh_state
 </UL>
 
 <P><STRONG><a name="[1b7]"></a>chassis_config_get_profile</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, chassis_config.o(i.chassis_config_get_profile))
-<BR><BR>[Called By]<UL><LI><a href="#[163]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
-<LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<BR><BR>[Called By]<UL><LI><a href="#[167]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
+<LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
 </UL>
 
 <P><STRONG><a name="[149]"></a>chassis_config_validate_profile</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, chassis_config.o(i.chassis_config_validate_profile))
 <BR><BR>[Calls]<UL><LI><a href="#[14a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_config_profile_limits_valid
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_update
-<LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
+<LI><a href="#[166]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
 </UL>
 
 <P><STRONG><a name="[d1]"></a>chassis_feedback_report</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, chassis_feedback.o(i.chassis_feedback_report))
-<BR><BR>[Stack]<UL><LI>Max Depth = 864 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 912 + Unknown Stack Size
 <LI>Call Chain = chassis_feedback_report &rArr; chassis_feedback_report_ascii &rArr; MotorFeedback_GetStatus &rArr; osMutexAcquire &rArr; xQueueTakeMutexRecursive &rArr; xQueueSemaphoreTake &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[14c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_mowen
@@ -2017,87 +2017,87 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisControlTask
 </UL>
 
-<P><STRONG><a name="[158]"></a>chassis_kinematics_inverse</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, chassis_kinematics.o(i.chassis_kinematics_inverse))
+<P><STRONG><a name="[159]"></a>chassis_kinematics_inverse</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, chassis_kinematics.o(i.chassis_kinematics_inverse))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = chassis_kinematics_inverse &rArr; chassis_kinematics_inverse_mecanum
 </UL>
-<BR>[Calls]<UL><LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_mecanum
-<LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_diff
-<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_zero_output
+<BR>[Calls]<UL><LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_mecanum
+<LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_diff
+<LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_zero_output
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[15b]"></a>chassis_kinematics_inverse_diff</STRONG> (Thumb, 162 bytes, Stack size 24 bytes, chassis_kinematics.o(i.chassis_kinematics_inverse_diff))
+<P><STRONG><a name="[15c]"></a>chassis_kinematics_inverse_diff</STRONG> (Thumb, 162 bytes, Stack size 24 bytes, chassis_kinematics.o(i.chassis_kinematics_inverse_diff))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = chassis_kinematics_inverse_diff
 </UL>
-<BR>[Calls]<UL><LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;velocity_mps_to_rpm
+<BR>[Calls]<UL><LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;velocity_mps_to_rpm
 </UL>
-<BR>[Called By]<UL><LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse
+<BR>[Called By]<UL><LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse
 </UL>
 
-<P><STRONG><a name="[15a]"></a>chassis_kinematics_inverse_mecanum</STRONG> (Thumb, 246 bytes, Stack size 32 bytes, chassis_kinematics.o(i.chassis_kinematics_inverse_mecanum))
+<P><STRONG><a name="[15b]"></a>chassis_kinematics_inverse_mecanum</STRONG> (Thumb, 246 bytes, Stack size 32 bytes, chassis_kinematics.o(i.chassis_kinematics_inverse_mecanum))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = chassis_kinematics_inverse_mecanum
 </UL>
-<BR>[Calls]<UL><LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_zero_output
-<LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;velocity_mps_to_rpm
+<BR>[Calls]<UL><LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_zero_output
+<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;velocity_mps_to_rpm
 </UL>
-<BR>[Called By]<UL><LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse
+<BR>[Called By]<UL><LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse
 </UL>
 
-<P><STRONG><a name="[c7]"></a>chassis_mode_apply_cmd</STRONG> (Thumb, 276 bytes, Stack size 88 bytes, chassis_mode.o(i.chassis_mode_apply_cmd))
-<BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = chassis_mode_apply_cmd &rArr; chassis_mode_apply_raw_pwm &rArr; MotorControlCore_ResetAll &rArr; MotorControlCore_Reset &rArr; MotorDriver_Stop &rArr; MotorDriver_SetOutput &rArr; motor_driver_store_output
+<P><STRONG><a name="[c7]"></a>chassis_mode_apply_cmd</STRONG> (Thumb, 346 bytes, Stack size 128 bytes, chassis_mode.o(i.chassis_mode_apply_cmd))
+<BR><BR>[Stack]<UL><LI>Max Depth = 216<LI>Call Chain = chassis_mode_apply_cmd &rArr; chassis_mode_apply_raw_pwm &rArr; MotorControlCore_ResetAll &rArr; MotorControlCore_Reset &rArr; MotorDriver_Stop &rArr; MotorDriver_SetOutput &rArr; motor_driver_store_output
 </UL>
 <BR>[Calls]<UL><LI><a href="#[129]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_SetParam
 <LI><a href="#[128]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_ResetIntegratorAll
-<LI><a href="#[168]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_SetTargets
-<LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
-<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_refresh
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
-<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
-<LI><a href="#[166]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_motion_enabled
-<LI><a href="#[167]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_clamp_velocity
-<LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
-<LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse
-<LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_param
-<LI><a href="#[163]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
+<LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_SetTargets
+<LI><a href="#[168]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
+<LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
+<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_refresh
+<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
+<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
+<LI><a href="#[163]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_motion_enabled
+<LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_clamp_velocity
+<LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
+<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse
+<LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_param
+<LI><a href="#[167]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_get_active_profile
-<LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
+<LI><a href="#[166]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisControlTask
 </UL>
 
-<P><STRONG><a name="[160]"></a>chassis_mode_apply_profile</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, chassis_mode.o(i.chassis_mode_apply_profile))
+<P><STRONG><a name="[161]"></a>chassis_mode_apply_profile</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, chassis_mode.o(i.chassis_mode_apply_profile))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = chassis_mode_apply_profile &rArr; chassis_mode_stop_motion &rArr; MotorControlCore_ResetAll &rArr; MotorControlCore_Reset &rArr; MotorDriver_Stop &rArr; MotorDriver_SetOutput &rArr; motor_driver_store_output
 </UL>
-<BR>[Calls]<UL><LI><a href="#[16a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_ResetProfile
-<LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
-<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
-<LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_switch_profile
+<BR>[Calls]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_ResetProfile
+<LI><a href="#[168]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
+<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
+<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
+<LI><a href="#[16a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_switch_profile
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[153]"></a>chassis_mode_get_active_mode</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_get_active_mode))
+<P><STRONG><a name="[154]"></a>chassis_mode_get_active_mode</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_get_active_mode))
 <BR><BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_ascii
 </UL>
 
-<P><STRONG><a name="[152]"></a>chassis_mode_get_active_profile</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_get_active_profile))
+<P><STRONG><a name="[153]"></a>chassis_mode_get_active_profile</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_get_active_profile))
 <BR><BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_ascii
 </UL>
 
-<P><STRONG><a name="[16b]"></a>chassis_mode_init</STRONG> (Thumb, 46 bytes, Stack size 8 bytes, chassis_mode.o(i.chassis_mode_init))
+<P><STRONG><a name="[16c]"></a>chassis_mode_init</STRONG> (Thumb, 46 bytes, Stack size 8 bytes, chassis_mode.o(i.chassis_mode_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = chassis_mode_init &rArr; MotorControlCore_Init &rArr; MotorDriver_StopAll &rArr; MotorDriver_Stop &rArr; MotorDriver_SetOutput &rArr; motor_driver_store_output
 </UL>
-<BR>[Calls]<UL><LI><a href="#[16a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_ResetProfile
+<BR>[Calls]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_ResetProfile
 <LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_Init
-<LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
-<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
-<LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
-<LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_get_state
+<LI><a href="#[168]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
+<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
+<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
+<LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<LI><a href="#[14f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_get_state
 </UL>
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -2110,9 +2110,9 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = chassis_mode_watchdog_update &rArr; chassis_mode_stop_motion &rArr; MotorControlCore_ResetAll &rArr; MotorControlCore_Reset &rArr; MotorDriver_Stop &rArr; MotorDriver_SetOutput &rArr; motor_driver_store_output
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
-<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
-<LI><a href="#[166]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_motion_enabled
+<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
+<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_stop_motion
+<LI><a href="#[163]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_motion_enabled
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisControlTask
 </UL>
@@ -2129,19 +2129,19 @@ Global Symbols
 <P><STRONG><a name="[c5]"></a>chassis_odometry_init</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, chassis_odometry.o(i.chassis_odometry_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = chassis_odometry_init &rArr; chassis_odometry_reset &rArr; __aeabi_memclr4
 </UL>
-<BR>[Calls]<UL><LI><a href="#[164]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
+<BR>[Calls]<UL><LI><a href="#[168]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_reset
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisControlTask
 </UL>
 
-<P><STRONG><a name="[164]"></a>chassis_odometry_reset</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, chassis_odometry.o(i.chassis_odometry_reset))
+<P><STRONG><a name="[168]"></a>chassis_odometry_reset</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, chassis_odometry.o(i.chassis_odometry_reset))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = chassis_odometry_reset &rArr; __aeabi_memclr4
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<BR>[Called By]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_init
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
+<LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
@@ -2207,7 +2207,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[17f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelStart
 <LI><a href="#[17e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelInitialize
 <LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_protocol_init
-<LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
 <LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART1_StartRx
 <LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_USART1_UART_Init
 <LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_TIM9_Init
@@ -2309,11 +2309,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvInitialiseNewTask
 </UL>
 
-<P><STRONG><a name="[162]"></a>runtime_tune_commit</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, runtime_tune.o(i.runtime_tune_commit))
+<P><STRONG><a name="[166]"></a>runtime_tune_commit</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, runtime_tune.o(i.runtime_tune_commit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = runtime_tune_commit &rArr; runtime_tune_init &rArr; runtime_tune_refresh_state &rArr; __aeabi_memcpy4
 </UL>
 <BR>[Calls]<UL><LI><a href="#[149]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_config_validate_profile
-<LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
 <LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_refresh_state
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
@@ -2323,21 +2323,22 @@ Global Symbols
 <P><STRONG><a name="[cc]"></a>runtime_tune_get_active_profile</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, runtime_tune.o(i.runtime_tune_get_active_profile))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = runtime_tune_get_active_profile &rArr; runtime_tune_init &rArr; runtime_tune_refresh_state &rArr; __aeabi_memcpy4
 </UL>
-<BR>[Calls]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<BR>[Calls]<UL><LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisControlTask
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[16d]"></a>runtime_tune_get_state</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, runtime_tune.o(i.runtime_tune_get_state))
+<P><STRONG><a name="[14f]"></a>runtime_tune_get_state</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, runtime_tune.o(i.runtime_tune_get_state))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = runtime_tune_get_state &rArr; runtime_tune_init &rArr; runtime_tune_refresh_state &rArr; __aeabi_memcpy4
 </UL>
-<BR>[Calls]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<BR>[Calls]<UL><LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<BR>[Called By]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_ascii
 </UL>
 
-<P><STRONG><a name="[16c]"></a>runtime_tune_init</STRONG> (Thumb, 100 bytes, Stack size 40 bytes, runtime_tune.o(i.runtime_tune_init))
+<P><STRONG><a name="[16d]"></a>runtime_tune_init</STRONG> (Thumb, 100 bytes, Stack size 40 bytes, runtime_tune.o(i.runtime_tune_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = runtime_tune_init &rArr; runtime_tune_refresh_state &rArr; __aeabi_memcpy4
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_config_get_profile
@@ -2345,43 +2346,43 @@ Global Symbols
 <LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_refresh_state
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
-<LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_switch_profile
-<LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_param
-<LI><a href="#[163]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
-<LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_get_state
+<BR>[Called By]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<LI><a href="#[16a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_switch_profile
+<LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_param
+<LI><a href="#[167]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
+<LI><a href="#[14f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_get_state
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_get_active_profile
-<LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
+<LI><a href="#[166]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
 </UL>
 
-<P><STRONG><a name="[163]"></a>runtime_tune_restore_defaults</STRONG> (Thumb, 80 bytes, Stack size 16 bytes, runtime_tune.o(i.runtime_tune_restore_defaults))
+<P><STRONG><a name="[167]"></a>runtime_tune_restore_defaults</STRONG> (Thumb, 80 bytes, Stack size 16 bytes, runtime_tune.o(i.runtime_tune_restore_defaults))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = runtime_tune_restore_defaults &rArr; runtime_tune_init &rArr; runtime_tune_refresh_state &rArr; __aeabi_memcpy4
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_config_get_profile
-<LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
 <LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_refresh_state
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[161]"></a>runtime_tune_set_param</STRONG> (Thumb, 72 bytes, Stack size 24 bytes, runtime_tune.o(i.runtime_tune_set_param))
+<P><STRONG><a name="[162]"></a>runtime_tune_set_param</STRONG> (Thumb, 72 bytes, Stack size 24 bytes, runtime_tune.o(i.runtime_tune_set_param))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = runtime_tune_set_param &rArr; runtime_tune_init &rArr; runtime_tune_refresh_state &rArr; __aeabi_memcpy4
 </UL>
-<BR>[Calls]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<BR>[Calls]<UL><LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
 <LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_refresh_state
 <LI><a href="#[1b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_apply_param
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[169]"></a>runtime_tune_switch_profile</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, runtime_tune.o(i.runtime_tune_switch_profile))
+<P><STRONG><a name="[16a]"></a>runtime_tune_switch_profile</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, runtime_tune.o(i.runtime_tune_switch_profile))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = runtime_tune_switch_profile &rArr; runtime_tune_init &rArr; runtime_tune_refresh_state &rArr; __aeabi_memcpy4
 </UL>
-<BR>[Calls]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<BR>[Calls]<UL><LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
 <LI><a href="#[1b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_refresh_state
 </UL>
-<BR>[Called By]<UL><LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
+<BR>[Called By]<UL><LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
 </UL>
 
 <P><STRONG><a name="[18c]"></a>uxListRemove</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, list.o(i.uxListRemove))
@@ -2587,9 +2588,9 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PendSV_Handler
 </UL>
 
-<P><STRONG><a name="[15c]"></a>velocity_mps_to_rpm</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, velocity_units.o(i.velocity_mps_to_rpm))
-<BR><BR>[Called By]<UL><LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_mecanum
-<LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_diff
+<P><STRONG><a name="[15d]"></a>velocity_mps_to_rpm</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, velocity_units.o(i.velocity_mps_to_rpm))
+<BR><BR>[Called By]<UL><LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_mecanum
+<LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_diff
 </UL>
 
 <P><STRONG><a name="[1c0]"></a>xPortStartScheduler</STRONG> (Thumb, 222 bytes, Stack size 16 bytes, port.o(i.xPortStartScheduler))
@@ -2983,7 +2984,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[1d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__fpl_dcmple_InfNaN
 </UL>
 
-<P><STRONG><a name="[151]"></a>__aeabi_f2d</STRONG> (Thumb, 0 bytes, Stack size 16 bytes, f2d.o(x$fpl$f2d))
+<P><STRONG><a name="[152]"></a>__aeabi_f2d</STRONG> (Thumb, 0 bytes, Stack size 16 bytes, f2d.o(x$fpl$f2d))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = __aeabi_f2d
 </UL>
 <BR>[Called By]<UL><LI><a href="#[14d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_ascii
@@ -3118,7 +3119,7 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[1b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_value_is_nan
 <LI><a href="#[1b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_sign
 </UL>
-<BR>[Called By]<UL><LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_param
+<BR>[Called By]<UL><LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_param
 </UL>
 
 <P><STRONG><a name="[1b6]"></a>runtime_tune_refresh_state</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, runtime_tune.o(i.runtime_tune_refresh_state))
@@ -3127,11 +3128,11 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[1b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_config_default_profile_id
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_switch_profile
-<LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_param
-<LI><a href="#[163]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
-<LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
-<LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
+<BR>[Called By]<UL><LI><a href="#[16a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_switch_profile
+<LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_set_param
+<LI><a href="#[167]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_restore_defaults
+<LI><a href="#[16d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_init
+<LI><a href="#[166]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_commit
 </UL>
 
 <P><STRONG><a name="[1b5]"></a>runtime_tune_set_sign</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, runtime_tune.o(i.runtime_tune_set_sign))
@@ -3147,9 +3148,9 @@ Local Symbols
 <LI><a href="#[1b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_apply_param
 </UL>
 
-<P><STRONG><a name="[159]"></a>chassis_kinematics_zero_output</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, chassis_kinematics.o(i.chassis_kinematics_zero_output))
-<BR><BR>[Called By]<UL><LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_mecanum
-<LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse
+<P><STRONG><a name="[15a]"></a>chassis_kinematics_zero_output</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, chassis_kinematics.o(i.chassis_kinematics_zero_output))
+<BR><BR>[Called By]<UL><LI><a href="#[15b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse_mecanum
+<LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_kinematics_inverse
 </UL>
 
 <P><STRONG><a name="[16f]"></a>chassis_protocol_clear_pending</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, chassis_protocol.o(i.chassis_protocol_clear_pending))
@@ -3253,57 +3254,57 @@ Local Symbols
 <LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_protocol_parse_ascii_line
 </UL>
 
-<P><STRONG><a name="[165]"></a>chassis_mode_apply_raw_pwm</STRONG> (Thumb, 146 bytes, Stack size 24 bytes, chassis_mode.o(i.chassis_mode_apply_raw_pwm))
+<P><STRONG><a name="[169]"></a>chassis_mode_apply_raw_pwm</STRONG> (Thumb, 146 bytes, Stack size 24 bytes, chassis_mode.o(i.chassis_mode_apply_raw_pwm))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = chassis_mode_apply_raw_pwm &rArr; MotorControlCore_ResetAll &rArr; MotorControlCore_Reset &rArr; MotorDriver_Stop &rArr; MotorDriver_SetOutput &rArr; motor_driver_store_output
 </UL>
 <BR>[Calls]<UL><LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_Stop
 <LI><a href="#[126]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_ResetAll
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_SetOutput
-<LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_refresh
-<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
+<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_refresh
+<LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_disarm
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[167]"></a>chassis_mode_clamp_velocity</STRONG> (Thumb, 118 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_clamp_velocity))
+<P><STRONG><a name="[164]"></a>chassis_mode_clamp_velocity</STRONG> (Thumb, 118 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_clamp_velocity))
 <BR><BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[166]"></a>chassis_mode_motion_enabled</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_motion_enabled))
+<P><STRONG><a name="[163]"></a>chassis_mode_motion_enabled</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_motion_enabled))
 <BR><BR>[Called By]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_update
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[15e]"></a>chassis_mode_stop_motion</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_stop_motion))
+<P><STRONG><a name="[15f]"></a>chassis_mode_stop_motion</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, chassis_mode.o(i.chassis_mode_stop_motion))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = chassis_mode_stop_motion &rArr; MotorControlCore_ResetAll &rArr; MotorControlCore_Reset &rArr; MotorDriver_Stop &rArr; MotorDriver_SetOutput &rArr; motor_driver_store_output
 </UL>
 <BR>[Calls]<UL><LI><a href="#[126]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_ResetAll
 </UL>
-<BR>[Called By]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<BR>[Called By]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_update
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
+<LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
 </UL>
 
-<P><STRONG><a name="[15d]"></a>chassis_mode_watchdog_disarm</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, chassis_mode.o(i.chassis_mode_watchdog_disarm))
+<P><STRONG><a name="[15e]"></a>chassis_mode_watchdog_disarm</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, chassis_mode.o(i.chassis_mode_watchdog_disarm))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = chassis_mode_watchdog_disarm
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 </UL>
-<BR>[Called By]<UL><LI><a href="#[16b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
+<BR>[Called By]<UL><LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_init
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_watchdog_update
-<LI><a href="#[160]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
+<LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_profile
 <LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
-<LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
+<LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
 </UL>
 
-<P><STRONG><a name="[15f]"></a>chassis_mode_watchdog_refresh</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, chassis_mode.o(i.chassis_mode_watchdog_refresh))
+<P><STRONG><a name="[160]"></a>chassis_mode_watchdog_refresh</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, chassis_mode.o(i.chassis_mode_watchdog_refresh))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = chassis_mode_watchdog_refresh
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_GetTick
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_cmd
-<LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
+<LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_apply_raw_pwm
 </UL>
 
 <P><STRONG><a name="[16e]"></a>chassis_odometry_integrate_body_delta</STRONG> (Thumb, 152 bytes, Stack size 32 bytes, chassis_odometry.o(i.chassis_odometry_integrate_body_delta))
@@ -3315,23 +3316,24 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_update
 </UL>
 
-<P><STRONG><a name="[157]"></a>chassis_feedback_put_i16_le</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, chassis_feedback.o(i.chassis_feedback_put_i16_le))
+<P><STRONG><a name="[158]"></a>chassis_feedback_put_i16_le</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, chassis_feedback.o(i.chassis_feedback_put_i16_le))
 <BR><BR>[Called By]<UL><LI><a href="#[14c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_mowen
 </UL>
 
-<P><STRONG><a name="[14d]"></a>chassis_feedback_report_ascii</STRONG> (Thumb, 738 bytes, Stack size 640 bytes, chassis_feedback.o(i.chassis_feedback_report_ascii))
-<BR><BR>[Stack]<UL><LI>Max Depth = 856 + Unknown Stack Size
+<P><STRONG><a name="[14d]"></a>chassis_feedback_report_ascii</STRONG> (Thumb, 878 bytes, Stack size 688 bytes, chassis_feedback.o(i.chassis_feedback_report_ascii))
+<BR><BR>[Stack]<UL><LI>Max Depth = 904 + Unknown Stack Size
 <LI>Call Chain = chassis_feedback_report_ascii &rArr; MotorFeedback_GetStatus &rArr; osMutexAcquire &rArr; xQueueTakeMutexRecursive &rArr; xQueueSemaphoreTake &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
-<BR>[Calls]<UL><LI><a href="#[14f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_GetOutput
+<BR>[Calls]<UL><LI><a href="#[150]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorDriver_GetOutput
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorFeedback_GetStatus
-<LI><a href="#[150]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_GetTarget
-<LI><a href="#[155]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_GetProfile
-<LI><a href="#[154]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_send_text
+<LI><a href="#[151]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_GetTarget
+<LI><a href="#[156]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorControlCore_GetProfile
+<LI><a href="#[155]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_send_text
 <LI><a href="#[14e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_get
-<LI><a href="#[152]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_get_active_profile
-<LI><a href="#[153]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_get_active_mode
-<LI><a href="#[151]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
+<LI><a href="#[153]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_get_active_profile
+<LI><a href="#[154]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_mode_get_active_mode
+<LI><a href="#[14f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;runtime_tune_get_state
+<LI><a href="#[152]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2snprintf
 </UL>
@@ -3342,19 +3344,19 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 224<LI>Call Chain = chassis_feedback_report_mowen &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
-<LI><a href="#[156]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_scale_i16
-<LI><a href="#[157]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_put_i16_le
+<LI><a href="#[157]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_scale_i16
+<LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_put_i16_le
 <LI><a href="#[14e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_odometry_get
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report
 </UL>
 
-<P><STRONG><a name="[156]"></a>chassis_feedback_scale_i16</STRONG> (Thumb, 74 bytes, Stack size 0 bytes, chassis_feedback.o(i.chassis_feedback_scale_i16))
+<P><STRONG><a name="[157]"></a>chassis_feedback_scale_i16</STRONG> (Thumb, 74 bytes, Stack size 0 bytes, chassis_feedback.o(i.chassis_feedback_scale_i16))
 <BR><BR>[Called By]<UL><LI><a href="#[14c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassis_feedback_report_mowen
 </UL>
 
-<P><STRONG><a name="[154]"></a>chassis_feedback_send_text</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, chassis_feedback.o(i.chassis_feedback_send_text))
+<P><STRONG><a name="[155]"></a>chassis_feedback_send_text</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, chassis_feedback.o(i.chassis_feedback_send_text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = chassis_feedback_send_text &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UART_Transmit
@@ -3364,7 +3366,7 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[68]"></a>ChassisControlTask</STRONG> (Thumb, 236 bytes, Stack size 224 bytes, freertos.o(i.ChassisControlTask))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1088 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 1136 + Unknown Stack Size
 <LI>Call Chain = ChassisControlTask &rArr; chassis_feedback_report &rArr; chassis_feedback_report_ascii &rArr; MotorFeedback_GetStatus &rArr; osMutexAcquire &rArr; xQueueTakeMutexRecursive &rArr; xQueueSemaphoreTake &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorFeedback_Sample

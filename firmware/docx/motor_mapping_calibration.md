@@ -14,7 +14,7 @@ The current firmware defaults are based on `firmware/param/param.md` and the liv
 
 | Item | Value |
 | --- | --- |
-| Wheel radius | `0.0255 m` / `25.5 mm` |
+| Wheel radius | `0.0350 m` / `35.0 mm` |
 | Track width | `0.250 m` / `25 cm` |
 | Wheel base | `0.220 m` / `22 cm` |
 | Reduction ratio | `30.0` |

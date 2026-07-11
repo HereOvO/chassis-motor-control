@@ -325,5 +325,3 @@ Reset behavior:
 5. Stop with `VEL,0.00,0.00,0.00`, then `ENABLE,0`.
 6. Check encoder deltas and `chassis_odometry_get()` in debugger.
 7. Adjust direction signs with `SET,5..8,-1/1` if wheel directions are inverted.
-
-

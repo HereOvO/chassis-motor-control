@@ -272,4 +272,3 @@ MSET,2,3,37.0
 ```
 
 Firmware feedback lines include the current values as `kp/ki/kd/kv/ks/olim/ilim/db` for each motor, so parameter writes can be confirmed from UART output.
-

@@ -50,3 +50,19 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Repository-local contributor and generated files
+AGENTS.md
+**/__pycache__/
+**/*.py[cod]
+
+# Keil / ARMCC build outputs and logs
+firmware/MDK-ARM/**/*.crf
+firmware/MDK-ARM/**/*.d
+firmware/MDK-ARM/**/*.dep
+firmware/MDK-ARM/**/*.axf
+firmware/MDK-ARM/**/*.hex
+firmware/MDK-ARM/**/*.htm
+firmware/MDK-ARM/**/*.lst
+firmware/MDK-ARM/**/*.log
+firmware/MDK-ARM/**/*.map

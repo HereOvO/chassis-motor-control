@@ -90,6 +90,7 @@ CC = (0x50 + MM) & 0xFF
 
 当前协议与上位机说明请优先阅读：
 
+- **当前 USART1 协议与已验证默认状态**: `CURRENT_PROTOCOL_STATUS_2026_7_11.md`
 - `MOTOR_MIGRATION_PROJECT.md`
 - `docx/formal_protocol_status.md`
 - `upper_computer/python_programs/README.md`
